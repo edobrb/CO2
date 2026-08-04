@@ -245,6 +245,88 @@ strong { color: var(--ink); font-weight: 600; }
   background: linear-gradient(90deg, #1c5cab, #383835, #d03b3b);
 }
 
+/* ============ FEEDBACK LOOPS ============ */
+.section-lede {
+  text-align: center;
+  font-size: 15px;
+  color: var(--ink-2);
+  max-width: 62ch;
+  margin: -10px auto 22px;
+}
+.ink-amp  { color: var(--serious); font-weight: 600; }
+.ink-stab { color: var(--s-blue); font-weight: 600; }
+
+.ledger-note {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-left: 2px solid var(--baseline);
+  background: rgba(255, 255, 255, 0.025);
+  border-radius: 0 8px 8px 0;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+
+/* loop cards with ring diagrams */
+.loop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 14px;
+}
+.loop {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 18px 18px;
+  display: flex;
+  flex-direction: column;
+}
+.loop-title {
+  font-size: 16.5px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.loop-title .loop-icon { font-size: 20px; line-height: 1; }
+
+.loop-ring { width: 100%; max-width: 260px; margin: 6px auto 2px; display: block; }
+.loop-ring text { font-size: 9.5px; fill: var(--ink-2); }
+.loop-ring .ring-center-val { font-size: 19px; font-weight: 700; fill: var(--ink); }
+.loop-ring .ring-center-unit { font-size: 8.5px; fill: var(--ink-3); letter-spacing: 0.06em; }
+.loop-comet { animation: orbit 5.5s linear infinite; }
+@keyframes orbit { to { stroke-dashoffset: -1000; } }
+.loop:hover .loop-comet, .loop:focus-within .loop-comet { animation-duration: 16s; }
+
+.loop-stat-label {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  text-align: center;
+  margin: 2px auto 12px;
+  max-width: 30ch;
+}
+.loop-body { font-size: 14px; color: var(--ink-2); margin-top: auto; }
+
+/* the "budget is generous" warning card */
+.card-warn {
+  background:
+    linear-gradient(180deg, rgba(236, 131, 90, 0.10), transparent 70%),
+    var(--surface);
+  border-left: 3px solid var(--serious);
+  border-radius: 14px;
+  padding: 22px 24px;
+}
+.warn-kicker {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: var(--serious);
+  font-weight: 600;
+}
+.warn-body { margin-top: 10px; font-size: 15px; color: var(--ink-2); max-width: 80ch; }
+
+@media (prefers-reduced-motion: reduce) {
+  .loop-comet { animation: none; }
+}
+
 /* ============ CARBON CLOCK ============ */
 .card-clock {
   background:
@@ -367,6 +449,15 @@ strong { color: var(--ink); font-weight: 600; }
 .tooltip .tt-row { display: flex; align-items: center; gap: 7px; white-space: nowrap; }
 .tooltip .tt-key { width: 12px; height: 0; border-top: 3px solid; border-radius: 2px; flex: none; }
 .tooltip .tt-val { color: var(--ink); font-weight: 600; }
+.tooltip .tt-note {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--hairline);
+  font-size: 12.5px;
+  color: var(--ink-2);
+  white-space: normal;
+  line-height: 1.45;
+}
 
 /* reveal-on-scroll */
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s ease; }

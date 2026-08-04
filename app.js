@@ -153,6 +153,14 @@
     t.textContent = title;
     tip.appendChild(t);
     rows.forEach((r) => {
+      // a prose explanation wraps instead of riding a single nowrap line
+      if (r.note) {
+        const n = document.createElement("div");
+        n.className = "tt-note";
+        n.textContent = r.note;
+        tip.appendChild(n);
+        return;
+      }
       const row = document.createElement("div");
       row.className = "tt-row";
       if (r.color) {
@@ -535,6 +543,306 @@
   }
 
   /* ----------------------------------------------------------
+     Chart 4 — the feedback ledger (diverging bars around zero)
+     ---------------------------------------------------------- */
+  const FB_AMP = "var(--s-red)";    // warm pole — adds heat
+  const FB_STAB = "var(--s-blue)";  // cool pole — sheds heat
+
+  function renderFeedbackLedger() {
+    const mount = $("chart-feedback");
+    mount.textContent = "";
+    const rows = C.FEEDBACKS;
+    const W = Math.max(320, mount.clientWidth);
+    const narrow = W < 600;
+    const rowH = narrow ? 52 : 46;
+    const M = { t: 10, r: narrow ? 46 : 58, b: 30, l: narrow ? 100 : 204 };
+    const minus = (s) => s.replace(/-/g, "−");   // typographic minus for display
+    const ih = rows.length * rowH;
+    const H = M.t + ih + M.b;
+    const iw = W - M.l - M.r;
+    const x0 = -3.6, x1 = 1.6;
+    const X = (v) => M.l + ((v - x0) / (x1 - x0)) * iw;
+    const barH = Math.min(24, rowH - 22);
+
+    const svg = el("svg", {
+      width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img",
+      "aria-label": "Diverging bar chart of IPCC AR6 climate feedback parameters in watts per square metre per degree Celsius. Water vapour plus lapse rate +1.30, clouds +0.42, surface albedo +0.35 amplify warming; the Planck response −3.22 stabilizes it; the net feedback is −1.16."
+    }, null);
+
+    // gridlines behind everything
+    niceTicks(x0, x1, 8).forEach((v) => {
+      if (v === 0) return;
+      el("line", { x1: X(v), x2: X(v), y1: M.t, y2: M.t + ih, stroke: "#2c2c2a", "stroke-width": 1 }, svg);
+      el("text", {
+        x: X(v), y: H - 12, "text-anchor": "middle", fill: "#898781",
+        "font-size": 11, style: "font-variant-numeric: tabular-nums"
+      }, svg).textContent = v > 0 ? "+" + v : minus(String(v));
+    });
+    el("text", {
+      x: X(0) + (narrow ? 0 : 0), y: H - 12, "text-anchor": "middle", fill: "#898781", "font-size": 11
+    }, svg).textContent = "0";
+    el("text", {
+      x: M.l + iw / 2, y: H - 1, "text-anchor": "middle", fill: "#898781", "font-size": 10.5
+    }, svg).textContent = "W/m² per °C of warming";
+
+    rows.forEach((r, i) => {
+      const cy = M.t + i * rowH + rowH / 2;
+      const isNet = r.kind === "net";
+      const color = cssColor(r.value >= 0 ? FB_AMP : FB_STAB);
+
+      // separator hairline above the NET summary row
+      if (isNet) {
+        el("line", {
+          x1: 8, x2: W - 8, y1: cy - rowH / 2, y2: cy - rowH / 2,
+          stroke: "#383835", "stroke-width": 1
+        }, svg);
+      }
+
+      // category label
+      const lab = el("text", {
+        x: M.l - 12, y: cy + 4, "text-anchor": "end",
+        fill: isNet ? "#f4f3ec" : "#c3c2b7",
+        "font-size": narrow ? 11 : 12.5, "font-weight": isNet ? 700 : 400
+      }, svg);
+      lab.textContent = narrow ? r.short : r.name;
+
+      // the bar: square at the zero baseline, 4px rounded at the data end
+      const zx = X(0), vx = X(r.value);
+      const y = cy - barH / 2, rr = 4;
+      let d;
+      if (r.value >= 0) {
+        d = `M ${zx} ${y} H ${vx - rr} Q ${vx} ${y} ${vx} ${y + rr}` +
+            ` V ${y + barH - rr} Q ${vx} ${y + barH} ${vx - rr} ${y + barH} H ${zx} Z`;
+      } else {
+        d = `M ${zx} ${y} H ${vx + rr} Q ${vx} ${y} ${vx} ${y + rr}` +
+            ` V ${y + barH - rr} Q ${vx} ${y + barH} ${vx + rr} ${y + barH} H ${zx} Z`;
+      }
+      el("path", { d, fill: color, opacity: isNet ? 1 : 0.92 }, svg);
+
+      // uncertainty whisker
+      if (r.lo != null && r.hi != null) {
+        const wy = cy;
+        el("line", { x1: X(r.lo), x2: X(r.hi), y1: wy, y2: wy, stroke: "#f4f3ec", "stroke-width": 1, opacity: 0.5 }, svg);
+        [r.lo, r.hi].forEach((v) => {
+          el("line", {
+            x1: X(v), x2: X(v), y1: wy - 5, y2: wy + 5,
+            stroke: "#f4f3ec", "stroke-width": 1, opacity: 0.5
+          }, svg);
+        });
+      }
+
+      // direct value label — clears the whisker, and flips inside the bar
+      // rather than overflow the chart when the gutter has no room for it
+      const txt = (r.value > 0 ? "+" : "") + minus(fmt2.format(r.value));
+      const fs = narrow ? 11.5 : 13;
+      const tw = txt.length * fs * 0.62;                     // width estimate
+      const pos = r.value >= 0;
+      const far = pos ? Math.max(vx, X(r.hi != null ? r.hi : r.value))
+                      : Math.min(vx, X(r.lo != null ? r.lo : r.value));
+      let lx = far + (pos ? 10 : -10), anchor = pos ? "start" : "end", fill = "#f4f3ec";
+      const fits = pos ? (lx + tw <= W - 2) : (lx - tw >= M.l + 2);
+      if (!fits) {                                            // set it inside the fill instead
+        lx = vx + (pos ? -8 : 8);
+        anchor = pos ? "end" : "start";
+        fill = "#0b0b0b";                                     // ink on the saturated fill
+      }
+      el("text", {
+        x: lx, y: cy + 4, "text-anchor": anchor,
+        fill, "font-size": fs, "font-weight": 600,
+        style: "font-variant-numeric: tabular-nums"
+      }, svg).textContent = txt;
+
+      // full-row hit target (≥24px) carrying the explanation
+      const hit = el("rect", {
+        x: 0, y: cy - rowH / 2, width: W, height: rowH,
+        fill: "transparent", tabindex: 0, role: "img",
+        "aria-label": r.name + ": " + (r.value > 0 ? "+" : "") + r.value +
+          " watts per square metre per degree. " + r.note
+      }, svg);
+      hit.style.cursor = "default";
+      hit.style.outline = "none";
+      const show = (cx2, cy2) => showTip(cx2, cy2, r.name, [
+        { color, value: (r.value > 0 ? "+" : "") + minus(fmt2.format(r.value)) + " W/m²/°C",
+          label: r.lo != null
+            ? "(" + minus(fmt2.format(r.lo)) + " to " + minus(fmt2.format(r.hi)) + ")" : "" },
+        { note: r.note }
+      ]);
+      hit.addEventListener("pointermove", (e) => show(e.clientX, e.clientY));
+      hit.addEventListener("pointerleave", hideTip);
+      hit.addEventListener("focus", () => {
+        const b = svg.getBoundingClientRect();
+        show(b.left + Math.min(vx, X(0)) + 40, b.top + cy);
+      });
+      hit.addEventListener("blur", hideTip);
+    });
+
+    // zero baseline drawn last so it sits above the fills
+    el("line", { x1: X(0), x2: X(0), y1: M.t, y2: M.t + ih, stroke: "#c3c2b7", "stroke-width": 1 }, svg);
+    mount.appendChild(svg);
+
+    // legend — identity never rests on color alone
+    const legend = $("legend-fb");
+    legend.textContent = "";
+    [{ n: "Amplifying — adds heat", c: cssColor(FB_AMP) },
+     { n: "Stabilizing — sheds heat", c: cssColor(FB_STAB) },
+     { n: "Whisker = assessed range", c: "#f4f3ec" }].forEach((it) => {
+      const item = document.createElement("span");
+      item.className = "legend-item";
+      const key = document.createElement("span");
+      key.className = "legend-key";
+      key.style.borderTopColor = it.c;
+      item.appendChild(key);
+      item.appendChild(document.createTextNode(it.n));
+      legend.appendChild(item);
+    });
+
+    buildTable($("table-feedback"),
+      ["Feedback", "W/m²/°C", "Range", "Effect"],
+      C.FEEDBACKS.map((r) => [
+        r.name,
+        (r.value > 0 ? "+" : "") + fmt2.format(r.value),
+        r.lo != null ? fmt2.format(r.lo) + " to " + fmt2.format(r.hi) : "—",
+        r.kind === "amp" ? "amplifying" : r.kind === "stab" ? "stabilizing" : "net balance"
+      ]));
+  }
+
+  /* ----------------------------------------------------------
+     The loop rings — each amplifying feedback as a real cycle
+     ---------------------------------------------------------- */
+  function wrapLabel(text, max) {
+    // honor explicit newlines, then greedily wrap the rest
+    return text.split("\n").flatMap((chunk) => {
+      const words = chunk.split(" ");
+      const lines = [];
+      let cur = "";
+      words.forEach((w) => {
+        if (!cur) cur = w;
+        else if ((cur + " " + w).length <= max) cur += " " + w;
+        else { lines.push(cur); cur = w; }
+      });
+      if (cur) lines.push(cur);
+      return lines;
+    });
+  }
+
+  function loopRing(loop) {
+    const VW = 250, VH = 196, cx = VW / 2, cy = 80, R = 52;
+    const svg = el("svg", {
+      viewBox: `0 0 ${VW} ${VH}`, class: "loop-ring", role: "img",
+      "aria-label": "Feedback cycle: " + loop.steps.map((s) => s.replace(/\n/g, " ")).join(", then ") +
+        ", returning to the start."
+    }, null);
+
+    // the ring itself
+    el("circle", { cx, cy, r: R, fill: "none", stroke: "#2c2c2a", "stroke-width": 6 }, svg);
+    el("circle", {
+      cx, cy, r: R, fill: "none", stroke: cssColor("var(--serious)"),
+      "stroke-width": 2, opacity: 0.45
+    }, svg);
+    // the travelling comet — pathLength 100 keeps the animation seamless
+    el("circle", {
+      cx, cy, r: R, fill: "none", stroke: cssColor("var(--serious)"),
+      "stroke-width": 3, "stroke-linecap": "round", pathLength: 100,
+      "stroke-dasharray": "12 88", class: "loop-comet",
+      transform: `rotate(-90 ${cx} ${cy})`
+    }, svg);
+
+    // direction arrowheads, tangential, clockwise
+    [45, 135, 225, 315].forEach((deg) => {
+      const a = (deg - 90) * Math.PI / 180;
+      const px = cx + Math.cos(a) * R, py = cy + Math.sin(a) * R;
+      const tri = el("path", { d: "M -4 -3.4 L 4 0 L -4 3.4 Z", fill: cssColor("var(--serious)") }, svg);
+      tri.setAttribute("transform", `translate(${px.toFixed(1)} ${py.toFixed(1)}) rotate(${deg})`);
+    });
+
+    // the four step nodes + labels
+    const anchors = [
+      { deg: -90, ax: "middle", dx: 0, dy: -16, up: true },
+      { deg: 0, ax: "start", dx: 12, dy: 0, up: false },
+      { deg: 90, ax: "middle", dx: 0, dy: 20, up: false },
+      { deg: 180, ax: "end", dx: -12, dy: 0, up: false }
+    ];
+    loop.steps.slice(0, 4).forEach((step, i) => {
+      const cfg = anchors[i];
+      const a = cfg.deg * Math.PI / 180;
+      const nx = cx + Math.cos(a) * R, ny = cy + Math.sin(a) * R;
+      el("circle", {
+        cx: nx, cy: ny, r: 4.5, fill: cssColor("var(--serious)"),
+        stroke: "#1a1a19", "stroke-width": 2
+      }, svg);
+
+      const lines = wrapLabel(step, 11);
+      const lx = nx + cfg.dx;
+      let ly = ny + cfg.dy;
+      if (cfg.up) ly -= (lines.length - 1) * 11;              // stack upward from the node
+      else if (cfg.deg === 0 || cfg.deg === 180) ly -= (lines.length - 1) * 5.5;  // centre vertically
+      const t = el("text", { x: lx, y: ly, "text-anchor": cfg.ax }, svg);
+      lines.forEach((ln, j) => {
+        const ts = el("tspan", { x: lx, dy: j === 0 ? 0 : 11 }, t);
+        ts.textContent = ln;
+      });
+    });
+
+    // the headline number, inside the ring — scaled so it never touches the ring
+    const v = el("text", { x: cx, y: cy - 1, "text-anchor": "middle", class: "ring-center-val" }, svg);
+    const size = loop.stat.length <= 5 ? 20 : loop.stat.length <= 7 ? 16 : 13;
+    v.setAttribute("font-size", size);
+    v.textContent = loop.stat;
+    const u = el("text", { x: cx, y: cy + 13, "text-anchor": "middle", class: "ring-center-unit" }, svg);
+    u.textContent = loop.statUnit;
+    return svg;
+  }
+
+  function renderLoops() {
+    const grid = $("loop-grid");
+    grid.textContent = "";
+    C.LOOPS.forEach((loop) => {
+      const card = document.createElement("article");
+      card.className = "loop";
+
+      const h = document.createElement("h3");
+      h.className = "loop-title";
+      const ic = document.createElement("span");
+      ic.className = "loop-icon";
+      ic.setAttribute("aria-hidden", "true");
+      ic.textContent = loop.icon;
+      h.appendChild(ic);
+      h.appendChild(document.createTextNode(loop.title));
+      card.appendChild(h);
+
+      card.appendChild(loopRing(loop));
+
+      const sl = document.createElement("p");
+      sl.className = "loop-stat-label";
+      sl.textContent = loop.statLabel;
+      card.appendChild(sl);
+
+      const body = document.createElement("p");
+      body.className = "loop-body";
+      body.innerHTML = loop.body;   // authored copy, not remote data
+      card.appendChild(body);
+
+      grid.appendChild(card);
+    });
+  }
+
+  function renderBalancers() {
+    const grid = $("balancer-grid");
+    grid.textContent = "";
+    C.BALANCERS.forEach((b) => {
+      const card = document.createElement("article");
+      card.className = "fact";
+      const h = document.createElement("h3");
+      h.textContent = b.icon + "  " + b.title;
+      const p = document.createElement("p");
+      p.innerHTML = b.body;         // authored copy, not remote data
+      card.appendChild(h);
+      card.appendChild(p);
+      grid.appendChild(card);
+    });
+  }
+
+  /* ----------------------------------------------------------
      Tables & sparklines
      ---------------------------------------------------------- */
   function buildTable(mount, headers, rows) {
@@ -678,7 +986,7 @@
   }
 
   function initReveal() {
-    const targets = document.querySelectorAll(".card, .tile, .sim, .fact, .stripes");
+    const targets = document.querySelectorAll(".card, .tile, .sim, .fact, .loop, .stripes");
     if (reduceMotion || !("IntersectionObserver" in window)) return;
     const io = new IntersectionObserver((entries) => {
       entries.forEach((en) => {
@@ -695,6 +1003,7 @@
     renderKeeling();
     renderStripes();
     renderTrajectories();
+    renderFeedbackLedger();
     renderSparks();
   }
 
@@ -710,6 +1019,8 @@
   setInterval(tickSims, 100);
   tickClock();
   setInterval(tickClock, 250);
+  renderLoops();
+  renderBalancers();
   renderAll();
   initHeat();
   initReveal();

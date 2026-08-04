@@ -129,6 +129,95 @@ window.CLIMATE = (function () {
   const CO2_PREINDUSTRIAL = 280;   // ppm, ~1850
   const CO2_SAFE = 350;            // ppm, the "safe boundary" (Hansen et al.)
 
+  /* ============================================================
+     FEEDBACK LEDGER — IPCC AR6 WGI Ch.7 assessed feedback
+     parameters, W m⁻² per °C of warming. Positive = amplifying
+     (pushes warming up), negative = stabilizing (pulls it back).
+     ============================================================ */
+  const FEEDBACKS = [
+    {
+      name: "Water vapour + lapse rate", short: "Water vapour", value: 1.30,
+      lo: 1.20, hi: 1.40, kind: "amp",
+      note: "The single largest amplifier. Warmer air holds ~7% more moisture per °C, and water vapour is itself a greenhouse gas."
+    },
+    {
+      name: "Clouds", short: "Clouds", value: 0.42,
+      lo: -0.10, hi: 0.94, kind: "amp",
+      note: "Amplifying on balance — and the largest single source of uncertainty in the whole ledger. The range crosses zero."
+    },
+    {
+      name: "Surface albedo (ice & snow)", short: "Ice albedo", value: 0.35,
+      lo: 0.10, hi: 0.60, kind: "amp",
+      note: "Melting ice and snow uncover dark land and ocean, which absorb the sunlight the ice used to bounce away."
+    },
+    {
+      name: "Planck response", short: "Planck response", value: -3.22,
+      lo: null, hi: null, kind: "stab",
+      note: "The great stabilizer: a warmer body radiates more heat. This single term is why Earth settles at a new temperature instead of running away."
+    },
+    {
+      name: "Net feedback", short: "NET", value: -1.16,
+      lo: -1.81, hi: -0.51, kind: "net",
+      note: "Stabilization wins — but only by about a third of its own strength. That narrow margin is what sets climate sensitivity near 3 °C per CO₂ doubling."
+    }
+  ];
+
+  /* ---- The amplifying loops, as mechanisms ---- */
+  const LOOPS = [
+    {
+      id: "albedo", icon: "🧊", title: "The vanishing mirror",
+      steps: ["Warming", "Sea ice melts", "Dark ocean\nabsorbs sun", "More warming"],
+      stat: "+0.71", statUnit: "W/m²",
+      statLabel: "extra heating from an ice-free Arctic — the forcing of a trillion tonnes of CO₂",
+      body: "Arctic ice bounces 50–70% of sunlight straight back to space. The open water beneath it reflects about 6% — it drinks the rest. Ice lost between 1979 and 2011 already added <strong>+0.21 W/m²</strong> of global heating, a quarter as much as all our CO₂ did over the same span. The planet is dismantling its own mirror."
+    },
+    {
+      id: "vapour", icon: "💧", title: "The thickening blanket",
+      steps: ["Warming", "More evaporation", "Vapour traps\nmore heat", "More warming"],
+      stat: "+7%", statUnit: "per °C",
+      statLabel: "more water vapour the air can hold for every degree of warming",
+      body: "Physics fixes this one: the Clausius–Clapeyron relation says warmer air holds about 7% more moisture per °C. Water vapour is the atmosphere's strongest greenhouse gas, so the extra moisture traps more heat, which evaporates more water. This loop roughly <strong>doubles</strong> the warming CO₂ would cause on its own — and it is already fully inside every climate model."
+    },
+    {
+      id: "permafrost", icon: "🪨", title: "The freezer door",
+      steps: ["Warming", "Permafrost thaws", "Microbes release\nCO₂ + methane", "More warming"],
+      stat: "2×", statUnit: "the air's carbon",
+      statLabel: "1,100–1,700 Gt C lies frozen in northern permafrost — about twice what the entire atmosphere holds",
+      body: "Frozen ground has kept plant matter on pause for tens of thousands of years. Thaw it and microbes finish the meal they started in the last ice age, exhaling CO₂ and methane — and methane traps about <strong>80× more heat than CO₂</strong> over its first 20 years. Counting permafrost and wildfire carbon shrinks the remaining 1.5 °C budget by <strong>25% ± 12%</strong>."
+    },
+    {
+      id: "sinks", icon: "🌊", title: "The tiring sponge",
+      steps: ["Warming", "Sinks weaken", "More CO₂ stays\nin the air", "More warming"],
+      stat: "~15%", statUnit: "weaker",
+      statLabel: "land and ocean carbon sinks over the past decade, because of climate impacts",
+      body: "Every year, land and ocean quietly absorb about <strong>half</strong> of everything we emit. It is the largest climate subsidy in existence, and it is being withdrawn: heat and drought cut plant uptake, and warm stratified seawater holds less gas. In 2024 the land sink nearly collapsed and atmospheric CO₂ jumped <strong>3.73 ppm</strong> — the fastest rise ever measured."
+    },
+    {
+      id: "forest", icon: "🌳", title: "The forest that exhales",
+      steps: ["Warming", "Drought & fire", "Forest becomes\na carbon source", "More warming"],
+      stat: "0.5", statUnit: "GtC/yr",
+      statLabel: "carbon the Amazon dieback region could emit instead of absorbing",
+      body: "The Amazon makes much of its own rain. Heat and clearing break that circuit, so drought and fire spread, and the forest flips from carbon <em>sink</em> to carbon <em>source</em>. Models put the onset of dieback inside this century, with decline accelerating sharply beyond about <strong>2.3 °C</strong>. A rainforest is not a fixed asset; it is a loop that can run backwards."
+    }
+  ];
+
+  /* ---- The balancing loops ---- */
+  const BALANCERS = [
+    {
+      icon: "🌡️", title: "The Planck response",
+      body: "Every warm object glows. Heat the planet and it radiates more energy to space — about <strong>3.2 W/m² for each °C</strong>, far more than all the amplifiers combined. This is the reason warming settles at a new, hotter equilibrium instead of spiralling into a Venus. It is also the only balancing loop that acts fast enough to matter this century."
+    },
+    {
+      icon: "🪨", title: "Rock weathering",
+      body: "Rain pulls CO₂ from the air and, over ages, dissolves it into rock. Earth genuinely does have a repair crew for excess carbon — but they work on <strong>hundreds of thousands of years</strong>. They will clean up the Anthropocene long after everyone reading this is a fossil."
+    },
+    {
+      icon: "🌱", title: "CO₂ fertilization",
+      body: "Extra CO₂ does make plants grow faster, and that greening has absorbed a real share of our emissions. But the effect <strong>saturates</strong>, needs water and nutrients that warming takes away, and is increasingly cancelled by drought, heat and fire. A helpful loop being overwhelmed by the ones above."
+    }
+  ];
+
+
   return {
     CO2_ANNUAL, TEMP_ANNUAL, TEMP_BASELINE_OFFSET, CO2_SEASONAL,
     CO2_MEAN_2025, CO2_GROWTH, SCENARIOS, CO2_PROJECTION,
@@ -137,6 +226,7 @@ window.CLIMATE = (function () {
     BOMBS_PER_SECOND, EIFFEL_T, BLUE_WHALE_T,
     METHANE_PPB, METHANE_PREIND_PPB, ARCTIC_SEPT_EXTENT, ARCTIC_TREND,
     SEA_LEVEL_MM_SINCE_1993, SEA_LEVEL_MM_PER_YEAR,
-    CO2_PREINDUSTRIAL, CO2_SAFE
+    CO2_PREINDUSTRIAL, CO2_SAFE,
+    FEEDBACKS, LOOPS, BALANCERS
   };
 })();
