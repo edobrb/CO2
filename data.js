@@ -136,27 +136,27 @@ window.CLIMATE = (function () {
      ============================================================ */
   const FEEDBACKS = [
     {
-      name: "Water vapour + lapse rate", short: "Water vapour", value: 1.30,
+      key: "wv", name: "Water vapour + lapse rate", short: "Water vapour", value: 1.30,
       lo: 1.20, hi: 1.40, kind: "amp",
       note: "The single largest amplifier. Warmer air holds ~7% more moisture per °C, and water vapour is itself a greenhouse gas."
     },
     {
-      name: "Clouds", short: "Clouds", value: 0.42,
+      key: "clouds", name: "Clouds", short: "Clouds", value: 0.42,
       lo: -0.10, hi: 0.94, kind: "amp",
       note: "Amplifying on balance — and the largest single source of uncertainty in the whole ledger. The range crosses zero."
     },
     {
-      name: "Surface albedo (ice & snow)", short: "Ice albedo", value: 0.35,
+      key: "albedo", name: "Surface albedo (ice & snow)", short: "Ice albedo", value: 0.35,
       lo: 0.10, hi: 0.60, kind: "amp",
       note: "Melting ice and snow uncover dark land and ocean, which absorb the sunlight the ice used to bounce away."
     },
     {
-      name: "Planck response", short: "Planck response", value: -3.22,
+      key: "planck", name: "Planck response", short: "Planck response", value: -3.22,
       lo: null, hi: null, kind: "stab",
       note: "The great stabilizer: a warmer body radiates more heat. This single term is why Earth settles at a new temperature instead of running away."
     },
     {
-      name: "Net feedback", short: "NET", value: -1.16,
+      key: "net", name: "Net feedback", short: "NET", value: -1.16,
       lo: -1.81, hi: -0.51, kind: "net",
       note: "Stabilization wins — but only by about a third of its own strength. That narrow margin is what sets climate sensitivity near 3 °C per CO₂ doubling."
     }
@@ -204,15 +204,15 @@ window.CLIMATE = (function () {
   /* ---- The balancing loops ---- */
   const BALANCERS = [
     {
-      icon: "🌡️", title: "The Planck response",
+      id: "planck", icon: "🌡️", title: "The Planck response",
       body: "Every warm object glows. Heat the planet and it radiates more energy to space — about <strong>3.2 W/m² for each °C</strong>, far more than all the amplifiers combined. This is the reason warming settles at a new, hotter equilibrium instead of spiralling into a Venus. It is also the only balancing loop that acts fast enough to matter this century."
     },
     {
-      icon: "🪨", title: "Rock weathering",
+      id: "weathering", icon: "🪨", title: "Rock weathering",
       body: "Rain pulls CO₂ from the air and, over ages, dissolves it into rock. Earth genuinely does have a repair crew for excess carbon — but they work on <strong>hundreds of thousands of years</strong>. They will clean up the Anthropocene long after everyone reading this is a fossil."
     },
     {
-      icon: "🌱", title: "CO₂ fertilization",
+      id: "fert", icon: "🌱", title: "CO₂ fertilization",
       body: "Extra CO₂ does make plants grow faster, and that greening has absorbed a real share of our emissions. But the effect <strong>saturates</strong>, needs water and nutrients that warming takes away, and is increasingly cancelled by drought, heat and fire. A helpful loop being overwhelmed by the ones above."
     }
   ];
