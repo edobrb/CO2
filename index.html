@@ -14,23 +14,25 @@
 
 <div class="heat-veil" aria-hidden="true"></div>
 
+<nav class="lang-switch" id="lang-switch" aria-label="Language"></nav>
+
 <!-- ============ HERO — the number that runs the thermostat ============ -->
 <header class="hero" id="top">
   <p class="hero-kicker">
     <span class="live-dot" id="live-dot" aria-hidden="true"></span>
-    <span id="live-label">interpolated from the latest NOAA reading</span>
+    <span id="live-label" data-i18n="hero.liveWait">interpolated from the latest NOAA reading</span>
   </p>
-  <h1 class="hero-label">Carbon dioxide in Earth's atmosphere, right now</h1>
+  <h1 class="hero-label" data-i18n="hero.label">Carbon dioxide in Earth's atmosphere, right now</h1>
   <p class="hero-number" aria-live="off">
     <span id="co2-int">···</span><span class="hero-decimals" id="co2-dec"></span>
     <span class="hero-unit">ppm</span>
   </p>
-  <p class="hero-context" id="hero-context">
-    That's <strong id="co2-vs-pre">···</strong> above the pre-industrial air every human before 1850 ever breathed —
-    and <strong id="co2-vs-lastyear">···</strong> more than this same day last year.
+  <p class="hero-context" id="hero-context" data-i18n-html="hero.context">
+    That is <strong id="co2-vs-pre">···</strong> more CO₂ than the pre-industrial atmosphere held (280 ppm before 1850) —
+    and <strong id="co2-vs-lastyear">···</strong> higher than on this same day last year.
   </p>
   <p class="hero-note" id="hero-season-note"></p>
-  <a class="hero-scroll" href="#vitals">▾ read the vital signs</a>
+  <a class="hero-scroll" href="#vitals" data-i18n="hero.scroll">▾ read the vital signs</a>
 </header>
 
 <main>
@@ -39,31 +41,31 @@
   <section class="section" id="vitals" aria-label="Key climate indicators">
     <div class="tiles">
       <article class="tile">
-        <p class="tile-label">Global temperature</p>
+        <p class="tile-label" data-i18n="tiles.temp">Global temperature</p>
         <p class="tile-value"><span id="kpi-temp">+1.47</span><span class="tile-unit">°C</span></p>
-        <p class="tile-delta delta-bad" id="kpi-temp-delta">vs late-1800s · warmest era in 125,000 years</p>
+        <p class="tile-delta delta-bad" id="kpi-temp-delta" data-i18n="tiles.tempDelta">vs the late 1800s · warmest era in 125,000 years</p>
         <svg class="tile-spark" id="spark-temp" aria-hidden="true"></svg>
       </article>
       <article class="tile">
-        <p class="tile-label">CO₂ concentration</p>
+        <p class="tile-label" data-i18n="tiles.co2">CO₂ concentration</p>
         <p class="tile-value"><span id="kpi-co2">···</span><span class="tile-unit">ppm</span></p>
-        <p class="tile-delta delta-bad" id="kpi-co2-delta">+2.7 ppm / yr and accelerating</p>
+        <p class="tile-delta delta-bad" id="kpi-co2-delta" data-i18n="tiles.co2Delta">+2.7 ppm per year, and accelerating</p>
         <svg class="tile-spark" id="spark-co2" aria-hidden="true"></svg>
       </article>
       <article class="tile">
-        <p class="tile-label">Methane</p>
+        <p class="tile-label" data-i18n="tiles.ch4">Methane</p>
         <p class="tile-value"><span id="kpi-ch4">1,935</span><span class="tile-unit">ppb</span></p>
         <p class="tile-delta delta-bad" id="kpi-ch4-delta">+165% vs pre-industrial</p>
       </article>
       <article class="tile">
-        <p class="tile-label">Arctic sea ice (Sept.)</p>
+        <p class="tile-label" data-i18n="tiles.ice">Arctic sea ice (Sept.)</p>
         <p class="tile-value"><span id="kpi-ice">4.28</span><span class="tile-unit">M km²</span></p>
-        <p class="tile-delta delta-bad">−12.2% per decade</p>
+        <p class="tile-delta delta-bad" data-i18n="tiles.iceDelta">−12.2% per decade</p>
       </article>
       <article class="tile">
-        <p class="tile-label">Sea level</p>
+        <p class="tile-label" data-i18n="tiles.sea">Sea level</p>
         <p class="tile-value"><span id="kpi-sea">+105</span><span class="tile-unit">mm</span></p>
-        <p class="tile-delta delta-bad">since 1993 · now +4.5 mm/yr</p>
+        <p class="tile-delta delta-bad" data-i18n="tiles.seaDelta">since 1993 · now rising 4.5 mm per year</p>
       </article>
     </div>
   </section>
@@ -71,13 +73,13 @@
   <!-- ============ THE KEELING CURVE ============ -->
   <section class="section">
     <div class="card">
-      <h2>The Keeling Curve — 67 years of one relentless line</h2>
-      <p class="card-sub">Atmospheric CO₂ measured at Mauna Loa since 1958. The small annual sawtooth is the
-        Northern Hemisphere breathing — forests inhale each summer, exhale each winter. The climb underneath it
-        never stops. The dashed tail is where today's trend points.</p>
+      <h2 data-i18n="keeling.h2">The Keeling Curve — 67 years of one relentless line</h2>
+      <p class="card-sub" data-i18n="keeling.sub">Atmospheric CO₂ measured at Mauna Loa since 1958. The small yearly sawtooth is
+        the Northern Hemisphere breathing: forests take carbon in each summer and release it each winter. The climb underneath
+        never stops. The dashed tail shows where today's trend is heading.</p>
       <div class="chart" id="chart-keeling"></div>
       <details class="table-view">
-        <summary>View data as table</summary>
+        <summary data-i18n="ui.tableView">View data as table</summary>
         <div class="table-scroll" id="table-keeling"></div>
       </details>
     </div>
@@ -86,28 +88,29 @@
   <!-- ============ WARMING STRIPES ============ -->
   <section class="section section-wide">
     <div class="stripes-head">
-      <h2>145 years, one stripe each</h2>
-      <p class="card-sub">Every stripe is a year, colored by how warm it was — blue cooler, red hotter
-        (after Ed Hawkins' <em>warming stripes</em>). Find the year you were born. Now find today.</p>
+      <h2 data-i18n="stripes.h2">145 years, one stripe each</h2>
+      <p class="card-sub" data-i18n-html="stripes.sub">Each stripe is one year, colored by how warm it was — blue for cooler, red for hotter
+        (after Ed Hawkins' <em>warming stripes</em>). Find the year you were born. Then find today.</p>
     </div>
     <div class="stripes" id="stripes" role="img" aria-label="Warming stripes: annual global temperature 1880 to 2024, shifting from blue to deep red"></div>
     <div class="stripes-scale">
-      <span>cooler</span>
+      <span data-i18n="stripes.cooler">cooler</span>
       <span class="stripes-gradient" aria-hidden="true"></span>
-      <span>hotter</span>
+      <span data-i18n="stripes.hotter">hotter</span>
     </div>
   </section>
 
   <!-- ============ TRAJECTORIES ============ -->
   <section class="section">
     <div class="card">
-      <h2>Where the century goes from here</h2>
-      <p class="card-sub">Observed warming (NASA), then three futures from climate models. The difference between
-        the lines is not weather — it's harvests, coastlines, and which cities stay livable. Anomalies vs the late 1800s.</p>
+      <h2 data-i18n="traj.h2">Where the century goes from here</h2>
+      <p class="card-sub" data-i18n="traj.sub">Warming observed so far (NASA), followed by three possible futures from climate models.
+        The gap between those lines is not about the weather — it decides harvests, coastlines, and which cities remain livable.
+        Temperatures are shown relative to the late 1800s.</p>
       <div class="legend" id="legend-traj"></div>
       <div class="chart" id="chart-traj"></div>
       <details class="table-view">
-        <summary>View data as table</summary>
+        <summary data-i18n="ui.tableView">View data as table</summary>
         <div class="table-scroll" id="table-traj"></div>
       </details>
     </div>
@@ -116,34 +119,34 @@
   <!-- ============ FEEDBACK LOOPS ============ -->
   <section class="section" id="loops">
     <div class="card">
-      <h2>The loops that do the driving</h2>
-      <p class="card-sub">
-        We emit the carbon — but the carbon is not what does most of the warming. It nudges the system,
-        and the system amplifies its own nudge. Think of a microphone held too close to its speaker:
-        the ear-splitting squeal isn't the singer, it's the <em>loop</em>. Climate has a room full of them.
-        Some push (<span class="ink-amp">amplifying</span>), some pull back (<span class="ink-stab">stabilizing</span>),
-        and the margin between them is the whole story.
+      <h2 data-i18n="loopsIntro.h2">The loops that do the driving</h2>
+      <p class="card-sub" data-i18n-html="loopsIntro.sub">
+        We emit the carbon — but the carbon itself does only part of the warming. It gives the climate a push,
+        and the climate then amplifies that push on its own. Think of a microphone held too close to its speaker:
+        the ear-splitting squeal is not the singer's voice — it is the <em>loop</em>. The climate system is full of loops like that.
+        Some push the warming further (<span class="ink-amp">amplifying</span>), some pull it back (<span class="ink-stab">stabilizing</span>),
+        and the margin between the two sides is the whole story.
       </p>
     </div>
   </section>
 
   <section class="section">
     <div class="card">
-      <h2>The planet's feedback ledger</h2>
-      <p class="card-sub">How hard each loop pushes, per degree of warming it responds to (IPCC AR6).
-        Bars to the right add heat; bars to the left shed it. Whiskers show the assessed uncertainty range —
+      <h2 data-i18n="ledger.h2">The planet's feedback ledger</h2>
+      <p class="card-sub" data-i18n="ledger.sub">How strongly each feedback pushes the climate, for every degree of warming it reacts to
+        (IPCC AR6). Bars pointing right add heat; bars pointing left shed it. The whiskers show the assessed uncertainty range —
         note that clouds could still turn out to cool.</p>
       <div class="legend" id="legend-fb"></div>
       <div class="chart" id="chart-feedback"></div>
-      <p class="ledger-note">
-        <strong>Read the bottom bar carefully.</strong> Stabilization wins — but only by about a third of its own
-        strength. Had the amplifiers summed past <strong>3.2</strong>, warming would have fed itself without limit
-        and Earth would look like Venus. Instead the books close at <strong>−1.16</strong>, and that razor-thin
-        margin is precisely what sets climate sensitivity near <strong>3 °C</strong> per doubling of CO₂.
+      <p class="ledger-note" data-i18n-html="ledger.note">
+        <strong>Read the bottom bar carefully.</strong> The stabilizing side wins — but only by about a third of its own
+        strength. If the amplifiers had added up to more than <strong>3.2</strong>, warming would have fed on itself without limit,
+        and Earth would look like Venus. Instead the ledger closes at <strong>−1.16</strong>, and that thin margin is exactly
+        what sets climate sensitivity near <strong>3 °C</strong> per doubling of CO₂.
         We are not living on a stable planet. We are living on a <em>barely</em> stable one.
       </p>
       <details class="table-view">
-        <summary>View data as table</summary>
+        <summary data-i18n="ui.tableView">View data as table</summary>
         <div class="table-scroll" id="table-feedback"></div>
       </details>
     </div>
@@ -151,128 +154,128 @@
 
   <!-- the amplifying loops, as mechanisms -->
   <section class="section">
-    <h2 class="section-title">Five loops already turning</h2>
-    <p class="section-lede">Each of these is a circle you can follow with your finger: warming enters at the top,
-      and comes back out bigger. Hover any ring to slow it down.</p>
+    <h2 class="section-title" data-i18n="loopsSec.h2">Five loops already turning</h2>
+    <p class="section-lede" data-i18n="loopsSec.lede">Each of these is a circle you can trace with a finger: warming enters at the top
+      and comes back out larger. Hover over a ring to slow it down.</p>
     <div class="loop-grid" id="loop-grid"></div>
   </section>
 
   <!-- the permafrost → budget bridge -->
   <section class="section">
     <div class="card card-warn">
-      <p class="warn-kicker">Why the countdown below is generous</p>
-      <p class="warn-body">
-        Carbon budgets are usually quoted for <em>our</em> emissions alone — as if the planet were a passive
-        container. Add the carbon that thawing permafrost and northern wildfires will release, and the room
-        left under 1.5 °C shrinks by <strong>25% ± 12%</strong>; under 2 °C, by <strong>17% ± 7%</strong>.
-        The loops don't wait for the budget to be spent. They are already spending it alongside us.
+      <p class="warn-kicker" data-i18n="warn.kicker">Why the countdown below is generous</p>
+      <p class="warn-body" data-i18n-html="warn.body">
+        Carbon budgets usually count only <em>our</em> emissions, as if the planet itself added nothing.
+        Add the carbon that thawing permafrost and northern wildfires will release, and the room
+        left under 1.5 °C shrinks by <strong>25% ± 12%</strong> — under 2 °C, by <strong>17% ± 7%</strong>.
+        The feedback loops are not waiting for us to spend the budget. They are already spending it with us.
       </p>
     </div>
   </section>
 
   <!-- the balancing side -->
   <section class="section">
-    <h2 class="section-title">And the loops holding the line</h2>
-    <p class="section-lede">Honesty demands the other column. Three loops push back — one of them is the only
-      reason this page exists at all.</p>
+    <h2 class="section-title" data-i18n="balSec.h2">And the loops holding the line</h2>
+    <p class="section-lede" data-i18n="balSec.lede">To be fair, the ledger has another column. Three loops push back against
+      the warming — and one of them is the only reason Earth is livable at all.</p>
     <div class="fact-grid" id="balancer-grid"></div>
   </section>
 
   <!-- ============ CARBON CLOCK ============ -->
   <section class="section">
     <div class="card card-clock">
-      <h2>The carbon countdown</h2>
-      <p class="card-sub">To likely stay under 1.5 °C, humanity has a fixed budget of CO₂ left to emit — ever.
-        At today's pace of <strong>~1,340 tonnes per second</strong>, this is how long it lasts:</p>
+      <h2 data-i18n="clock.h2">The carbon countdown</h2>
+      <p class="card-sub" data-i18n-html="clock.sub">To keep warming below 1.5 °C with even a 50/50 chance, humanity has a fixed budget
+        of CO₂ left to emit — ever. At today's pace of <strong>~1,340 tonnes per second</strong>, this is how long it lasts:</p>
       <p class="clock" id="clock-15" aria-live="off">
-        <span class="clock-seg"><b id="c15-y">·</b><i>years</i></span>
-        <span class="clock-seg"><b id="c15-d">··</b><i>days</i></span>
-        <span class="clock-seg"><b id="c15-h">··</b><i>hrs</i></span>
-        <span class="clock-seg"><b id="c15-m">··</b><i>min</i></span>
-        <span class="clock-seg"><b id="c15-s">··</b><i>sec</i></span>
+        <span class="clock-seg"><b id="c15-y">·</b><i data-i18n="clock.y">years</i></span>
+        <span class="clock-seg"><b id="c15-d">··</b><i data-i18n="clock.d">days</i></span>
+        <span class="clock-seg"><b id="c15-h">··</b><i data-i18n="clock.h">hrs</i></span>
+        <span class="clock-seg"><b id="c15-m">··</b><i data-i18n="clock.m">min</i></span>
+        <span class="clock-seg"><b id="c15-s">··</b><i data-i18n="clock.s">sec</i></span>
       </p>
       <div class="meters">
         <div class="meter-row">
-          <p class="meter-label">1.5 °C budget <span id="meter-15-pct" class="meter-pct">·</span></p>
-          <div class="meter" role="img" aria-label="Share of the 1.5 degree carbon budget already emitted">
+          <p class="meter-label"><span data-i18n="clock.b15">1.5 °C budget</span> <span id="meter-15-pct" class="meter-pct">·</span></p>
+          <div class="meter" role="img" aria-label="Share of the 1.5 degree carbon budget already emitted" id="meter-15-bar">
             <div class="meter-track meter-critical"><div class="meter-fill" id="meter-15"></div></div>
           </div>
         </div>
         <div class="meter-row">
-          <p class="meter-label">2.0 °C budget <span id="meter-20-pct" class="meter-pct">·</span> <span class="meter-note" id="clock-20-note"></span></p>
-          <div class="meter" role="img" aria-label="Share of the 2 degree carbon budget already emitted">
+          <p class="meter-label"><span data-i18n="clock.b20">2.0 °C budget</span> <span id="meter-20-pct" class="meter-pct">·</span> <span class="meter-note" id="clock-20-note"></span></p>
+          <div class="meter" role="img" aria-label="Share of the 2 degree carbon budget already emitted" id="meter-20-bar">
             <div class="meter-track meter-serious"><div class="meter-fill" id="meter-20"></div></div>
           </div>
         </div>
       </div>
-      <p class="clock-foot">Budgets: IPCC AR6 / Global Carbon Budget 2024, 50% likelihood, counted from Jan 2025.
+      <p class="clock-foot" data-i18n="clock.foot">Budgets: IPCC AR6 / Global Carbon Budget 2024, 50% likelihood, counted from January 2025.
         The clock assumes emissions stay at today's rate — every cut buys time.</p>
     </div>
   </section>
 
   <!-- ============ SIMILITUDES — while you were here ============ -->
   <section class="section">
-    <h2 class="section-title">Meanwhile, since you opened this page…</h2>
+    <h2 class="section-title" data-i18n="sims.h2">Meanwhile, since you opened this page…</h2>
     <div class="sim-grid">
       <article class="sim">
         <p class="sim-value" id="sim-tons">0</p>
-        <p class="sim-label">tonnes of CO₂ emitted worldwide</p>
+        <p class="sim-label" data-i18n="sims.tons">tonnes of CO₂ emitted worldwide</p>
       </article>
       <article class="sim">
         <p class="sim-value" id="sim-eiffel">0.00</p>
-        <p class="sim-label">Eiffel Towers of CO₂, by weight — one every ~7.6 seconds</p>
+        <p class="sim-label" data-i18n="sims.eiffel">Eiffel Towers of CO₂, by weight — one every ~7.6 seconds</p>
       </article>
       <article class="sim">
         <p class="sim-value" id="sim-whales">0</p>
-        <p class="sim-label">blue whales of CO₂ — about 10 whales every single second</p>
+        <p class="sim-label" data-i18n="sims.whales">blue whales of CO₂ — about 10 whales every second</p>
       </article>
       <article class="sim">
         <p class="sim-value" id="sim-bombs">0</p>
-        <p class="sim-label">Hiroshima bombs of extra heat trapped by the oceans and air</p>
+        <p class="sim-label" data-i18n="sims.bombs">Hiroshima bombs' worth of extra heat trapped by the oceans and air</p>
       </article>
     </div>
     <div class="fact-grid">
       <article class="fact">
-        <h3>🦕 Deep-time déjà vu</h3>
-        <p>The last time CO₂ was this high was the <strong>Pliocene, ~3–5 million years ago</strong>. No humans existed;
-          seas stood <strong>10–20 metres higher</strong>; camels lived in the Arctic. We rebuilt that atmosphere in one lifetime.</p>
+        <h3 data-i18n="facts.pliocene.h3">🦕 Deep-time déjà vu</h3>
+        <p data-i18n-html="facts.pliocene.body">The last time CO₂ was this high was the <strong>Pliocene, 3–5 million years ago</strong>. No humans existed,
+          the seas stood <strong>10–20 metres higher</strong>, and camels lived in the Arctic. We rebuilt that atmosphere within a single lifetime.</p>
       </article>
       <article class="fact">
-        <h3>🫁 Every breath you take</h3>
-        <p>Roughly <strong>1 molecule in 2,300</strong> of the air in your lungs right now is CO₂ — half again as much
-          as anyone alive in 1850 inhaled. Your grandparents literally breathed different air.</p>
+        <h3 data-i18n="facts.breath.h3">🫁 Every breath you take</h3>
+        <p data-i18n-html="facts.breath.body">About <strong>1 molecule in every 2,300</strong> of the air in your lungs right now is CO₂ — roughly 50% more
+          than anyone alive in 1850 inhaled. Your grandparents literally breathed different air.</p>
       </article>
       <article class="fact">
-        <h3>🚄 Speed matters</h3>
-        <p>Coming out of the last ice age, CO₂ rose ~80 ppm in <strong>6,000 years</strong>. We just did ~80 ppm in
-          <strong>45 years</strong> — about <strong>130× faster</strong>. Nature has brakes; we cut them.</p>
+        <h3 data-i18n="facts.speed.h3">🚄 Speed matters</h3>
+        <p data-i18n-html="facts.speed.body">Coming out of the last ice age, CO₂ rose by about 80 ppm over <strong>6,000 years</strong>. We have just done
+          80 ppm in <strong>45 years</strong> — roughly <strong>130× faster</strong>. Nature has brakes; we cut them.</p>
       </article>
       <article class="fact">
-        <h3>🧊 A blanket, not a bomb</h3>
-        <p>CO₂ works like a blanket around the planet. Each year we knit it thicker — the extra heat it now traps
-          equals <strong>~10 Hiroshima explosions per second</strong>, ~90% of it soaked up by the ocean.</p>
+        <h3 data-i18n="facts.blanket.h3">🧊 A blanket, not a bomb</h3>
+        <p data-i18n-html="facts.blanket.body">CO₂ works like a blanket around the planet, and every year we knit it a little thicker. The extra heat it
+          now traps equals about <strong>10 Hiroshima explosions per second</strong> — and roughly 90% of it is absorbed by the ocean.</p>
       </article>
     </div>
   </section>
 
   <!-- ============ FOOTER ============ -->
   <footer class="footer">
-    <p><strong>Sources &amp; honesty box.</strong> CO₂: NOAA Global Monitoring Lab (Mauna Loa). Temperature: NASA GISTEMP.
+    <p id="footer-sources"><strong>Sources &amp; honesty box.</strong> CO₂: NOAA Global Monitoring Lab (Mauna Loa). Temperature: NASA GISTEMP.
       Live feeds via the open <a href="https://global-warming.org" rel="noopener">global-warming.org</a> API, with embedded
       fallback data when offline. Emission rate &amp; carbon budgets: Global Carbon Budget 2024, IPCC AR6.
       Projections: IPCC AR6 / Climate Action Tracker central estimates.
       Feedback parameters: <a href="https://www.ipcc.ch/report/ar6/wg1/chapter/chapter-7/" rel="noopener">IPCC AR6 WGI Chapter 7</a>
       (Table 7.10). Ice-albedo forcing: <a href="https://www.pnas.org/doi/10.1073/pnas.1318201111" rel="noopener">Pistone, Eisenman &amp; Ramanathan, PNAS 2014</a>
       and <a href="https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2019GL082914" rel="noopener">Pistone et al., GRL 2019</a>.
-      Permafrost carbon stocks and the budget reduction:
+      Permafrost carbon and the budget reduction:
       <a href="https://www.nature.com/articles/s43017-021-00230-3" rel="noopener">Nature Reviews Earth &amp; Environment 2021</a>
       and <a href="https://www.nature.com/articles/s43247-026-03189-5" rel="noopener">Communications Earth &amp; Environment 2026</a>.
       Carbon-sink weakening: <a href="https://essd.copernicus.org/articles/17/965/2025/" rel="noopener">Global Carbon Budget 2024</a>.
       Amazon dieback: <a href="https://www.nature.com/articles/s43247-025-02606-5" rel="noopener">Communications Earth &amp; Environment 2025</a>
       and <a href="https://www.pnas.org/doi/10.1073/pnas.2418813122" rel="noopener">PNAS 2025</a>. Between readings, values are
-      <em>interpolated</em> from the latest measured trend and seasonal cycle — ticking digits are an estimate,
-      the direction is measurement. This is an independent educational visualization, not an official product of these agencies.</p>
-    <p class="footer-fine">Built with plain HTML/SVG · <span id="data-stamp"></span></p>
+      <em>interpolated</em> from the latest measured trend and seasonal cycle — the ticking digits are an estimate;
+      the direction is a measurement. This is an independent educational visualization, not an official product of these agencies.</p>
+    <p class="footer-fine"><span data-i18n="footer.fine">Built with plain HTML/SVG</span> · <span id="data-stamp"></span></p>
   </footer>
 
 </main>
@@ -281,6 +284,7 @@
 <noscript><p class="noscript">This dashboard needs JavaScript to tick. The data sources are listed in the footer.</p></noscript>
 
 <script src="data.js"></script>
+<script src="i18n.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

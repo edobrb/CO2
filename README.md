@@ -31,6 +31,14 @@ toward 2100.
 Every chart has a crosshair tooltip, keyboard navigation (focus + arrow keys), and a
 "view data as table" twin. Honors `prefers-reduced-motion`.
 
+## Languages
+
+The whole page — copy, charts, tooltips, tables, aria labels, and number formats —
+is available in **English, Italiano, Français, Deutsch, Español, and Português**.
+The switcher sits in the top-right corner; the choice is remembered in
+`localStorage`, and the first visit follows the browser language. All strings live
+in `i18n.js`.
+
 ## Data sources
 
 | Signal | Source | Live feed |
