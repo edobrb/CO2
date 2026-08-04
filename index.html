@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Earth's Vital Signs — live CO₂ &amp; climate dashboard</title>
+<meta name="description" content="A live dashboard of atmospheric CO₂, global temperature, and where our trajectory leads — real data, interpolated in real time.">
+<meta property="og:title" content="Earth's Vital Signs">
+<meta property="og:description" content="Atmospheric CO₂ right now, the warming stripes, the carbon countdown — real data, live.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌍%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="heat-veil" aria-hidden="true"></div>
+
+<!-- ============ HERO — the number that runs the thermostat ============ -->
+<header class="hero" id="top">
+  <p class="hero-kicker">
+    <span class="live-dot" id="live-dot" aria-hidden="true"></span>
+    <span id="live-label">interpolated from the latest NOAA reading</span>
+  </p>
+  <h1 class="hero-label">Carbon dioxide in Earth's atmosphere, right now</h1>
+  <p class="hero-number" aria-live="off">
+    <span id="co2-int">···</span><span class="hero-decimals" id="co2-dec"></span>
+    <span class="hero-unit">ppm</span>
+  </p>
+  <p class="hero-context" id="hero-context">
+    That's <strong id="co2-vs-pre">···</strong> above the pre-industrial air every human before 1850 ever breathed —
+    and <strong id="co2-vs-lastyear">···</strong> more than this same day last year.
+  </p>
+  <p class="hero-note" id="hero-season-note"></p>
+  <a class="hero-scroll" href="#vitals">▾ read the vital signs</a>
+</header>
+
+<main>
+
+  <!-- ============ KPI ROW — the patient's chart ============ -->
+  <section class="section" id="vitals" aria-label="Key climate indicators">
+    <div class="tiles">
+      <article class="tile">
+        <p class="tile-label">Global temperature</p>
+        <p class="tile-value"><span id="kpi-temp">+1.47</span><span class="tile-unit">°C</span></p>
+        <p class="tile-delta delta-bad" id="kpi-temp-delta">vs late-1800s · warmest era in 125,000 years</p>
+        <svg class="tile-spark" id="spark-temp" aria-hidden="true"></svg>
+      </article>
+      <article class="tile">
+        <p class="tile-label">CO₂ concentration</p>
+        <p class="tile-value"><span id="kpi-co2">···</span><span class="tile-unit">ppm</span></p>
+        <p class="tile-delta delta-bad" id="kpi-co2-delta">+2.7 ppm / yr and accelerating</p>
+        <svg class="tile-spark" id="spark-co2" aria-hidden="true"></svg>
+      </article>
+      <article class="tile">
+        <p class="tile-label">Methane</p>
+        <p class="tile-value"><span id="kpi-ch4">1,935</span><span class="tile-unit">ppb</span></p>
+        <p class="tile-delta delta-bad" id="kpi-ch4-delta">+165% vs pre-industrial</p>
+      </article>
+      <article class="tile">
+        <p class="tile-label">Arctic sea ice (Sept.)</p>
+        <p class="tile-value"><span id="kpi-ice">4.28</span><span class="tile-unit">M km²</span></p>
+        <p class="tile-delta delta-bad">−12.2% per decade</p>
+      </article>
+      <article class="tile">
+        <p class="tile-label">Sea level</p>
+        <p class="tile-value"><span id="kpi-sea">+105</span><span class="tile-unit">mm</span></p>
+        <p class="tile-delta delta-bad">since 1993 · now +4.5 mm/yr</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ THE KEELING CURVE ============ -->
+  <section class="section">
+    <div class="card">
+      <h2>The Keeling Curve — 67 years of one relentless line</h2>
+      <p class="card-sub">Atmospheric CO₂ measured at Mauna Loa since 1958. The small annual sawtooth is the
+        Northern Hemisphere breathing — forests inhale each summer, exhale each winter. The climb underneath it
+        never stops. The dashed tail is where today's trend points.</p>
+      <div class="chart" id="chart-keeling"></div>
+      <details class="table-view">
+        <summary>View data as table</summary>
+        <div class="table-scroll" id="table-keeling"></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ WARMING STRIPES ============ -->
+  <section class="section section-wide">
+    <div class="stripes-head">
+      <h2>145 years, one stripe each</h2>
+      <p class="card-sub">Every stripe is a year, colored by how warm it was — blue cooler, red hotter
+        (after Ed Hawkins' <em>warming stripes</em>). Find the year you were born. Now find today.</p>
+    </div>
+    <div class="stripes" id="stripes" role="img" aria-label="Warming stripes: annual global temperature 1880 to 2024, shifting from blue to deep red"></div>
+    <div class="stripes-scale">
+      <span>cooler</span>
+      <span class="stripes-gradient" aria-hidden="true"></span>
+      <span>hotter</span>
+    </div>
+  </section>
+
+  <!-- ============ TRAJECTORIES ============ -->
+  <section class="section">
+    <div class="card">
+      <h2>Where the century goes from here</h2>
+      <p class="card-sub">Observed warming (NASA), then three futures from climate models. The difference between
+        the lines is not weather — it's harvests, coastlines, and which cities stay livable. Anomalies vs the late 1800s.</p>
+      <div class="legend" id="legend-traj"></div>
+      <div class="chart" id="chart-traj"></div>
+      <details class="table-view">
+        <summary>View data as table</summary>
+        <div class="table-scroll" id="table-traj"></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ CARBON CLOCK ============ -->
+  <section class="section">
+    <div class="card card-clock">
+      <h2>The carbon countdown</h2>
+      <p class="card-sub">To likely stay under 1.5 °C, humanity has a fixed budget of CO₂ left to emit — ever.
+        At today's pace of <strong>~1,340 tonnes per second</strong>, this is how long it lasts:</p>
+      <p class="clock" id="clock-15" aria-live="off">
+        <span class="clock-seg"><b id="c15-y">·</b><i>years</i></span>
+        <span class="clock-seg"><b id="c15-d">··</b><i>days</i></span>
+        <span class="clock-seg"><b id="c15-h">··</b><i>hrs</i></span>
+        <span class="clock-seg"><b id="c15-m">··</b><i>min</i></span>
+        <span class="clock-seg"><b id="c15-s">··</b><i>sec</i></span>
+      </p>
+      <div class="meters">
+        <div class="meter-row">
+          <p class="meter-label">1.5 °C budget <span id="meter-15-pct" class="meter-pct">·</span></p>
+          <div class="meter" role="img" aria-label="Share of the 1.5 degree carbon budget already emitted">
+            <div class="meter-track meter-critical"><div class="meter-fill" id="meter-15"></div></div>
+          </div>
+        </div>
+        <div class="meter-row">
+          <p class="meter-label">2.0 °C budget <span id="meter-20-pct" class="meter-pct">·</span> <span class="meter-note" id="clock-20-note"></span></p>
+          <div class="meter" role="img" aria-label="Share of the 2 degree carbon budget already emitted">
+            <div class="meter-track meter-serious"><div class="meter-fill" id="meter-20"></div></div>
+          </div>
+        </div>
+      </div>
+      <p class="clock-foot">Budgets: IPCC AR6 / Global Carbon Budget 2024, 50% likelihood, counted from Jan 2025.
+        The clock assumes emissions stay at today's rate — every cut buys time.</p>
+    </div>
+  </section>
+
+  <!-- ============ SIMILITUDES — while you were here ============ -->
+  <section class="section">
+    <h2 class="section-title">Meanwhile, since you opened this page…</h2>
+    <div class="sim-grid">
+      <article class="sim">
+        <p class="sim-value" id="sim-tons">0</p>
+        <p class="sim-label">tonnes of CO₂ emitted worldwide</p>
+      </article>
+      <article class="sim">
+        <p class="sim-value" id="sim-eiffel">0.00</p>
+        <p class="sim-label">Eiffel Towers of CO₂, by weight — one every ~7.6 seconds</p>
+      </article>
+      <article class="sim">
+        <p class="sim-value" id="sim-whales">0</p>
+        <p class="sim-label">blue whales of CO₂ — about 10 whales every single second</p>
+      </article>
+      <article class="sim">
+        <p class="sim-value" id="sim-bombs">0</p>
+        <p class="sim-label">Hiroshima bombs of extra heat trapped by the oceans and air</p>
+      </article>
+    </div>
+    <div class="fact-grid">
+      <article class="fact">
+        <h3>🦕 Deep-time déjà vu</h3>
+        <p>The last time CO₂ was this high was the <strong>Pliocene, ~3–5 million years ago</strong>. No humans existed;
+          seas stood <strong>10–20 metres higher</strong>; camels lived in the Arctic. We rebuilt that atmosphere in one lifetime.</p>
+      </article>
+      <article class="fact">
+        <h3>🫁 Every breath you take</h3>
+        <p>Roughly <strong>1 molecule in 2,300</strong> of the air in your lungs right now is CO₂ — half again as much
+          as anyone alive in 1850 inhaled. Your grandparents literally breathed different air.</p>
+      </article>
+      <article class="fact">
+        <h3>🚄 Speed matters</h3>
+        <p>Coming out of the last ice age, CO₂ rose ~80 ppm in <strong>6,000 years</strong>. We just did ~80 ppm in
+          <strong>45 years</strong> — about <strong>130× faster</strong>. Nature has brakes; we cut them.</p>
+      </article>
+      <article class="fact">
+        <h3>🧊 A blanket, not a bomb</h3>
+        <p>CO₂ works like a blanket around the planet. Each year we knit it thicker — the extra heat it now traps
+          equals <strong>~10 Hiroshima explosions per second</strong>, ~90% of it soaked up by the ocean.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <p><strong>Sources &amp; honesty box.</strong> CO₂: NOAA Global Monitoring Lab (Mauna Loa). Temperature: NASA GISTEMP.
+      Live feeds via the open <a href="https://global-warming.org" rel="noopener">global-warming.org</a> API, with embedded
+      fallback data when offline. Emission rate &amp; carbon budgets: Global Carbon Budget 2024, IPCC AR6.
+      Projections: IPCC AR6 / Climate Action Tracker central estimates. Between readings, values are
+      <em>interpolated</em> from the latest measured trend and seasonal cycle — ticking digits are an estimate,
+      the direction is measurement. This is an independent educational visualization, not an official product of these agencies.</p>
+    <p class="footer-fine">Built with plain HTML/SVG · <span id="data-stamp"></span></p>
+  </footer>
+
+</main>
+
+<div class="tooltip" id="tooltip" role="status" aria-hidden="true"></div>
+<noscript><p class="noscript">This dashboard needs JavaScript to tick. The data sources are listed in the footer.</p></noscript>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
