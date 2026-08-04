@@ -9,9 +9,37 @@
   const SVG_NS = "http://www.w3.org/2000/svg";
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const fmtInt = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
-  const fmt1 = new Intl.NumberFormat("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-  const fmt2 = new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  /* ----------------------------------------------------------
+     i18n — language state, string lookup, locale formatters
+     ---------------------------------------------------------- */
+  const I18N = window.I18N;
+  const LANG_ORDER = ["en", "it", "fr", "de", "es", "pt"];
+
+  function detectLang() {
+    try {
+      const saved = localStorage.getItem("evs-lang");
+      if (saved && I18N.LANGS[saved]) return saved;
+    } catch (e) { /* storage unavailable */ }
+    const nav = (navigator.language || "en").slice(0, 2).toLowerCase();
+    return I18N.LANGS[nav] ? nav : "en";
+  }
+  let lang = detectLang();
+
+  function t(path) {
+    const dig = (obj) => path.split(".").reduce((o, k) => (o == null ? o : o[k]), obj);
+    const v = dig(I18N.LANGS[lang]);
+    return v != null ? v : dig(I18N.LANGS.en);
+  }
+  const fill = (tpl, vars) => tpl.replace(/\{(\w+)\}/g, (m, k) => (vars[k] != null ? vars[k] : m));
+
+  let fmtInt, fmt1, fmt2;
+  function buildFormatters() {
+    const loc = t("locale");
+    fmtInt = new Intl.NumberFormat(loc, { maximumFractionDigits: 0 });
+    fmt1 = new Intl.NumberFormat(loc, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    fmt2 = new Intl.NumberFormat(loc, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  buildFormatters();
 
   /* ----------------------------------------------------------
      State — starts on embedded data, upgraded by live feeds
@@ -19,7 +47,10 @@
   const state = {
     co2Anchor: null,            // { time: ms, value: ppm } latest real reading
     co2YoY: null,               // measured ppm gain vs same day last year
+    co2ReadingISO: null,        // date of the latest live reading, for labels
     tempAnnual: C.TEMP_ANNUAL.slice(),
+    tempLatest: null,           // [year, anomaly] from the live feed
+    ch4: null,                  // live methane ppb
     live: false
   };
 
@@ -67,7 +98,7 @@
     const now = Date.now();
     const v = co2Now(now);
     const head = Math.floor(v * 100) / 100;
-    heroInt.textContent = head.toFixed(2);
+    heroInt.textContent = fmt2.format(head);
     heroDec.textContent = String(Math.floor(v * 1e7) % 1e5).padStart(5, "0");
 
     $("co2-vs-pre").textContent =
@@ -82,9 +113,7 @@
   function heroSeasonNote() {
     const now = Date.now(), week = 7 * 864e5;
     const slope = co2Model(now + week) - co2Model(now);
-    $("hero-season-note").textContent = slope < 0
-      ? "Dipping this month? That's the planet's summer inhale — northern forests drawing carbon down. The sawtooth dips every year; the line underneath it only climbs."
-      : "Climbing fast right now — the winter exhale of northern ecosystems stacked on top of the fossil-fuel trend.";
+    $("hero-season-note").textContent = slope < 0 ? t("hero.seasonDown") : t("hero.seasonUp");
   }
 
   function startHero() {
@@ -136,10 +165,10 @@
     const used20 = Math.min(1, (C.BUDGET_20_TOTAL - C.BUDGET_20_T + spent) / C.BUDGET_20_TOTAL);
     $("meter-15").style.width = (used15 * 100).toFixed(3) + "%";
     $("meter-20").style.width = (used20 * 100).toFixed(3) + "%";
-    $("meter-15-pct").textContent = "· " + (used15 * 100).toFixed(2) + "% already emitted";
-    $("meter-20-pct").textContent = "· " + (used20 * 100).toFixed(2) + "% already emitted";
+    $("meter-15-pct").textContent = fill(t("clock.emitted"), { pct: fmt2.format(used15 * 100) });
+    $("meter-20-pct").textContent = fill(t("clock.emitted"), { pct: fmt2.format(used20 * 100) });
     const y20 = new Date(C.BUDGET_START + C.BUDGET_20_T / perMs).getUTCFullYear();
-    $("clock-20-note").textContent = "· runs out ~" + y20 + " at today's pace";
+    $("clock-20-note").textContent = fill(t("clock.runsOut"), { year: y20 });
   }
 
   /* ----------------------------------------------------------
@@ -378,15 +407,14 @@
 
     lineChart({
       mount: $("chart-keeling"),
-      ariaLabel: "Line chart of atmospheric CO2 from 1958 to today, rising from 316 to about " +
-        Math.round(nowVal) + " ppm, with a dashed projection reaching 500 ppm by 2050",
+      ariaLabel: fill(t("keeling.aria"), { now: Math.round(nowVal) }),
       xDomain: [1958, 2050],
       yDomain: [270, 510],
       yFmt: (v) => fmtInt.format(v),
       xFmt: (v) => String(Math.round(v)),
       refLines: [
-        { y: C.CO2_PREINDUSTRIAL, label: "pre-industrial · 280 ppm" },
-        { y: C.CO2_SAFE, label: "“safe” boundary · 350 ppm" }
+        { y: C.CO2_PREINDUSTRIAL, label: t("keeling.refPre") },
+        { y: C.CO2_SAFE, label: t("keeling.refSafe") }
       ],
       series: [
         { name: "projected", color: "var(--s-blue)", points: proj, dash: true },
@@ -402,18 +430,18 @@
         }
         el("circle", { cx, cy, r: 4.5, fill: cssColor("var(--s-red)"), stroke: "#1a1a19", "stroke-width": 2 }, svg);
         el("text", { x: cx + 12, y: cy + 4, fill: "#f4f3ec", "font-size": 12, "font-weight": 600 }, svg)
-          .textContent = "today · " + fmt1.format(nowVal);
+          .textContent = fill(t("keeling.today"), { value: fmt1.format(nowVal) });
       },
       tooltipXs: C.CO2_ANNUAL.map((p) => p[0]).concat([2030, 2040, 2050]),
       tooltipRows: (year) => {
         if (annualByYear.has(year)) {
-          return [{ color: "var(--s-blue)", value: fmt2.format(annualByYear.get(year)) + " ppm", label: "annual mean" }];
+          return [{ color: "var(--s-blue)", value: fmt2.format(annualByYear.get(year)) + " ppm", label: t("keeling.ttAnnual") }];
         }
-        return [{ color: "var(--s-blue)", value: "~" + fmtInt.format(crSample(proj, year)) + " ppm", label: "if the trend continues" }];
+        return [{ color: "var(--s-blue)", value: "~" + fmtInt.format(crSample(proj, year)) + " ppm", label: t("keeling.ttTrend") }];
       }
     });
 
-    buildTable($("table-keeling"), ["Year", "CO₂ (ppm)"],
+    buildTable($("table-keeling"), [t("keeling.tblYear"), t("keeling.tblCo2")],
       C.CO2_ANNUAL.map((p) => [p[0], fmt2.format(p[1])]));
   }
 
@@ -447,11 +475,11 @@
       d.tabIndex = 0;
       d.setAttribute("role", "img");
       const anomaly = v + C.TEMP_BASELINE_OFFSET;
-      d.setAttribute("aria-label", `${year}: ${(anomaly >= 0 ? "+" : "")}${fmt2.format(anomaly)} °C vs late 1800s`);
+      d.setAttribute("aria-label", `${year}: ${(anomaly >= 0 ? "+" : "")}${fmt2.format(anomaly)} °C ${t("stripes.vs")}`);
       const show = (x, y) => showTip(x, y, String(year), [{
         color: stripeColor(v, mid, span),
         value: (anomaly >= 0 ? "+" : "") + fmt2.format(anomaly) + " °C",
-        label: "vs late 1800s"
+        label: t("stripes.vs")
       }]);
       d.addEventListener("pointermove", (e) => show(e.clientX, e.clientY));
       d.addEventListener("pointerleave", hideTip);
@@ -471,14 +499,14 @@
     const scenarioSeries = C.SCENARIOS.map((s) => {
       const pts = [[lastObs[0], lastObs[1]]];
       for (let y = 2026; y <= 2100; y += 2) pts.push([y, crSample(s.points, y)]);
-      return { ...s, sampled: pts };
+      return { ...s, name: t("scenarios." + s.id), sampled: pts };
     });
 
     // legend (also carries identity for CVD readers via direct end labels)
     const legend = $("legend-traj");
     legend.textContent = "";
-    [{ name: "Observed (NASA)", color: "#c3c2b7" }]
-      .concat(C.SCENARIOS.map((s) => ({ name: s.name, color: cssColor(s.color) })))
+    [{ name: t("traj.observed"), color: "#c3c2b7" }]
+      .concat(scenarioSeries.map((s) => ({ name: s.name, color: cssColor(s.color) })))
       .forEach((it) => {
         const item = document.createElement("span");
         item.className = "legend-item";
@@ -496,27 +524,27 @@
 
     lineChart({
       mount: $("chart-traj"),
-      ariaLabel: "Line chart of global temperature anomaly from 1880 observed data through three model scenarios to 2100, ranging from 1.8 to 4.4 degrees Celsius",
+      ariaLabel: t("traj.aria"),
       xDomain: [1880, 2100],
       yDomain: [-0.6, 4.6],
       yFmt: (v) => (v > 0 ? "+" : "") + fmt1.format(v) + "°",
       xFmt: (v) => String(Math.round(v)),
       refLines: [
-        { y: 1.5, label: "Paris limit · +1.5 °C" },
-        { y: 2.0, label: "+2 °C" }
+        { y: 1.5, label: t("traj.refParis") },
+        { y: 2.0, label: t("traj.ref2") }
       ],
       series: [
         ...scenarioSeries.map((s) => ({
           name: s.name, color: s.color, points: s.sampled, dot: true,
           label: (s.id === "high" ? "+4.4°" : s.id === "current" ? "+2.7°" : "+1.8°")
         })),
-        { name: "Observed (NASA)", color: "#c3c2b7", points: observed, dot: true }
+        { name: t("traj.observed"), color: "#c3c2b7", points: observed, dot: true }
       ],
       tooltipXs: xs,
       tooltipRows: (year) => {
         const rows = [];
         if (obsByYear.has(year)) {
-          rows.push({ color: "#c3c2b7", value: "+" + fmt2.format(obsByYear.get(year)) + " °C", label: "observed" });
+          rows.push({ color: "#c3c2b7", value: "+" + fmt2.format(obsByYear.get(year)) + " °C", label: t("traj.ttObserved") });
         }
         if (year >= 2025) {
           scenarioSeries.forEach((s) => rows.push({
@@ -538,8 +566,7 @@
         y >= 2030 ? "+" + fmt2.format(crSample(C.SCENARIOS[0].points, y)) : "—"
       ]);
     }
-    buildTable($("table-traj"),
-      ["Year", "Observed °C", "Paris path", "Current policies", "High emissions"], rows);
+    buildTable($("table-traj"), t("traj.tblHead").slice(), rows);
   }
 
   /* ----------------------------------------------------------
@@ -552,10 +579,16 @@
     const mount = $("chart-feedback");
     mount.textContent = "";
     const rows = C.FEEDBACKS;
+    const fbT = (r, field) => t("feedbacks." + r.key + "." + field);
     const W = Math.max(320, mount.clientWidth);
     const narrow = W < 600;
     const rowH = narrow ? 52 : 46;
-    const M = { t: 10, r: narrow ? 46 : 58, b: 30, l: narrow ? 100 : 204 };
+    // left gutter sized to the longest translated label so nothing clips
+    const labelFs = narrow ? 11 : 12.5;
+    const longest = Math.max(...rows.map((r) => (narrow ? fbT(r, "short") : fbT(r, "name")).length));
+    const gutter = Math.round(longest * labelFs * 0.56) + 20;
+    const M = { t: 10, r: narrow ? 46 : 58, b: 30,
+                l: Math.min(Math.round(W * 0.44), Math.max(narrow ? 100 : 204, gutter)) };
     const minus = (s) => s.replace(/-/g, "−");   // typographic minus for display
     const ih = rows.length * rowH;
     const H = M.t + ih + M.b;
@@ -566,7 +599,7 @@
 
     const svg = el("svg", {
       width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img",
-      "aria-label": "Diverging bar chart of IPCC AR6 climate feedback parameters in watts per square metre per degree Celsius. Water vapour plus lapse rate +1.30, clouds +0.42, surface albedo +0.35 amplify warming; the Planck response −3.22 stabilizes it; the net feedback is −1.16."
+      "aria-label": t("ledger.aria")
     }, null);
 
     // gridlines behind everything
@@ -583,7 +616,7 @@
     }, svg).textContent = "0";
     el("text", {
       x: M.l + iw / 2, y: H - 1, "text-anchor": "middle", fill: "#898781", "font-size": 10.5
-    }, svg).textContent = "W/m² per °C of warming";
+    }, svg).textContent = t("ledger.axis");
 
     rows.forEach((r, i) => {
       const cy = M.t + i * rowH + rowH / 2;
@@ -604,7 +637,7 @@
         fill: isNet ? "#f4f3ec" : "#c3c2b7",
         "font-size": narrow ? 11 : 12.5, "font-weight": isNet ? 700 : 400
       }, svg);
-      lab.textContent = narrow ? r.short : r.name;
+      lab.textContent = narrow ? fbT(r, "short") : fbT(r, "name");
 
       // the bar: square at the zero baseline, 4px rounded at the data end
       const zx = X(0), vx = X(r.value);
@@ -656,16 +689,16 @@
       const hit = el("rect", {
         x: 0, y: cy - rowH / 2, width: W, height: rowH,
         fill: "transparent", tabindex: 0, role: "img",
-        "aria-label": r.name + ": " + (r.value > 0 ? "+" : "") + r.value +
-          " watts per square metre per degree. " + r.note
+        "aria-label": fbT(r, "name") + ": " + (r.value > 0 ? "+" : "") + r.value +
+          " W/m²/°C. " + fbT(r, "note")
       }, svg);
       hit.style.cursor = "default";
       hit.style.outline = "none";
-      const show = (cx2, cy2) => showTip(cx2, cy2, r.name, [
+      const show = (cx2, cy2) => showTip(cx2, cy2, fbT(r, "name"), [
         { color, value: (r.value > 0 ? "+" : "") + minus(fmt2.format(r.value)) + " W/m²/°C",
           label: r.lo != null
-            ? "(" + minus(fmt2.format(r.lo)) + " to " + minus(fmt2.format(r.hi)) + ")" : "" },
-        { note: r.note }
+            ? "(" + minus(fmt2.format(r.lo)) + " – " + minus(fmt2.format(r.hi)) + ")" : "" },
+        { note: fbT(r, "note") }
       ]);
       hit.addEventListener("pointermove", (e) => show(e.clientX, e.clientY));
       hit.addEventListener("pointerleave", hideTip);
@@ -683,9 +716,9 @@
     // legend — identity never rests on color alone
     const legend = $("legend-fb");
     legend.textContent = "";
-    [{ n: "Amplifying — adds heat", c: cssColor(FB_AMP) },
-     { n: "Stabilizing — sheds heat", c: cssColor(FB_STAB) },
-     { n: "Whisker = assessed range", c: "#f4f3ec" }].forEach((it) => {
+    [{ n: t("ledger.legendAmp"), c: cssColor(FB_AMP) },
+     { n: t("ledger.legendStab"), c: cssColor(FB_STAB) },
+     { n: t("ledger.legendWhisker"), c: "#f4f3ec" }].forEach((it) => {
       const item = document.createElement("span");
       item.className = "legend-item";
       const key = document.createElement("span");
@@ -697,12 +730,12 @@
     });
 
     buildTable($("table-feedback"),
-      ["Feedback", "W/m²/°C", "Range", "Effect"],
+      t("ledger.tblHead").slice(),
       C.FEEDBACKS.map((r) => [
-        r.name,
+        fbT(r, "name"),
         (r.value > 0 ? "+" : "") + fmt2.format(r.value),
-        r.lo != null ? fmt2.format(r.lo) + " to " + fmt2.format(r.hi) : "—",
-        r.kind === "amp" ? "amplifying" : r.kind === "stab" ? "stabilizing" : "net balance"
+        r.lo != null ? fmt2.format(r.lo) + " – " + fmt2.format(r.hi) : "—",
+        r.kind === "amp" ? t("ledger.amp") : r.kind === "stab" ? t("ledger.stab") : t("ledger.net")
       ]));
   }
 
@@ -729,8 +762,9 @@
     const VW = 250, VH = 196, cx = VW / 2, cy = 80, R = 52;
     const svg = el("svg", {
       viewBox: `0 0 ${VW} ${VH}`, class: "loop-ring", role: "img",
-      "aria-label": "Feedback cycle: " + loop.steps.map((s) => s.replace(/\n/g, " ")).join(", then ") +
-        ", returning to the start."
+      "aria-label": fill(t("loopAria.cycle"), {
+        steps: loop.steps.map((s) => s.replace(/\n/g, " ")).join(t("loopAria.then"))
+      })
     }, null);
 
     // the ring itself
@@ -776,9 +810,16 @@
       let ly = ny + cfg.dy;
       if (cfg.up) ly -= (lines.length - 1) * 11;              // stack upward from the node
       else if (cfg.deg === 0 || cfg.deg === 180) ly -= (lines.length - 1) * 5.5;  // centre vertically
-      const t = el("text", { x: lx, y: ly, "text-anchor": cfg.ax }, svg);
+      const node = el("text", { x: lx, y: ly, "text-anchor": cfg.ax }, svg);
+      // side labels get ~58px before the SVG edge; squeeze unbreakable words
+      const avail = cfg.ax === "middle" ? 190 : 58;
       lines.forEach((ln, j) => {
-        const ts = el("tspan", { x: lx, dy: j === 0 ? 0 : 11 }, t);
+        const attrs = { x: lx, dy: j === 0 ? 0 : 11 };
+        if (ln.length * 5.4 > avail) {
+          attrs.textLength = avail;
+          attrs.lengthAdjust = "spacingAndGlyphs";
+        }
+        const ts = el("tspan", attrs, node);
         ts.textContent = ln;
       });
     });
@@ -796,7 +837,8 @@
   function renderLoops() {
     const grid = $("loop-grid");
     grid.textContent = "";
-    C.LOOPS.forEach((loop) => {
+    C.LOOPS.forEach((raw) => {
+      const loop = { ...raw, ...t("loops." + raw.id) };
       const card = document.createElement("article");
       card.className = "loop";
 
@@ -829,7 +871,8 @@
   function renderBalancers() {
     const grid = $("balancer-grid");
     grid.textContent = "";
-    C.BALANCERS.forEach((b) => {
+    C.BALANCERS.forEach((raw) => {
+      const b = { ...raw, ...t("balancers." + raw.id) };
       const card = document.createElement("article");
       card.className = "fact";
       const h = document.createElement("h3");
@@ -896,6 +939,24 @@
   /* ----------------------------------------------------------
      Live data — global-warming.org (NOAA / NASA mirrors)
      ---------------------------------------------------------- */
+  function renderLiveLabels() {
+    if (state.co2ReadingISO) {
+      $("live-label").textContent = fill(t("hero.liveLabel"), { date: state.co2ReadingISO });
+      $("data-stamp").textContent = fill(t("footer.stampLive"), { date: state.co2ReadingISO });
+    } else {
+      $("live-label").textContent = t("hero.liveWait");
+      $("data-stamp").textContent = t("footer.stampWait");
+    }
+    if (state.tempLatest) {
+      $("kpi-temp").textContent = "+" + fmt2.format(state.tempLatest[1] + C.TEMP_BASELINE_OFFSET);
+      $("kpi-temp-delta").textContent = fill(t("tiles.tempDeltaLive"), { year: state.tempLatest[0] });
+    }
+    const ch4Pct = state.ch4 != null
+      ? Math.round(((state.ch4 / C.METHANE_PREIND_PPB) - 1) * 100)
+      : Math.round(((C.METHANE_PPB / C.METHANE_PREIND_PPB) - 1) * 100);
+    $("kpi-ch4-delta").textContent = fill(t("tiles.ch4Delta"), { pct: ch4Pct });
+  }
+
   function fetchJSON(url) {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), 9000);
@@ -909,12 +970,12 @@
       const arr = j && j.co2;
       if (!Array.isArray(arr) || !arr.length) return;
       const last = arr[arr.length - 1];
-      const t = Date.UTC(+last.year, +last.month - 1, +last.day);
+      const tms = Date.UTC(+last.year, +last.month - 1, +last.day);
       const v = parseFloat(last.cycle);
       if (!isFinite(v) || v < 300 || v > 600) return;
-      state.co2Anchor = { time: t, value: v };
+      state.co2Anchor = { time: tms, value: v };
       // measured year-over-year gain
-      const target = t - 365 * 864e5;
+      const target = tms - 365 * 864e5;
       let best = null, bd = Infinity;
       for (const e of arr) {
         const et = Date.UTC(+e.year, +e.month - 1, +e.day);
@@ -923,10 +984,9 @@
       }
       if (best && bd < 8 * 864e5) state.co2YoY = v - parseFloat(best.cycle);
       state.live = true;
+      state.co2ReadingISO = new Date(tms).toISOString().slice(0, 10);
       $("live-dot").classList.add("is-live");
-      $("live-label").textContent = "live · latest NOAA reading " +
-        new Date(t).toISOString().slice(0, 10) + ", interpolated since";
-      $("data-stamp").textContent = "live NOAA reading " + new Date(t).toISOString().slice(0, 10);
+      renderLiveLabels();
       renderKeeling();
     }).catch(() => {});
 
@@ -948,9 +1008,8 @@
       });
       if (annual.length < 100) return;
       state.tempAnnual = annual;
-      const latest = annual[annual.length - 1];
-      $("kpi-temp").textContent = "+" + fmt2.format(latest[1] + C.TEMP_BASELINE_OFFSET);
-      $("kpi-temp-delta").textContent = "vs late-1800s · " + latest[0] + " mean (NASA)";
+      state.tempLatest = annual[annual.length - 1];
+      renderLiveLabels();
       renderStripes();
       renderTrajectories();
       renderSparks();
@@ -961,9 +1020,9 @@
       if (!Array.isArray(arr) || !arr.length) return;
       const v = parseFloat(arr[arr.length - 1].average);
       if (!isFinite(v) || v < 1000 || v > 4000) return;
+      state.ch4 = v;
       $("kpi-ch4").textContent = fmtInt.format(v);
-      $("kpi-ch4-delta").textContent =
-        "+" + Math.round(((v / C.METHANE_PREIND_PPB) - 1) * 100) + "% vs pre-industrial";
+      renderLiveLabels();
     }).catch(() => {});
   }
 
@@ -997,6 +1056,58 @@
   }
 
   /* ----------------------------------------------------------
+     Language switcher — swaps every string, then re-renders
+     ---------------------------------------------------------- */
+  function applyStatic() {
+    document.documentElement.lang = lang;
+    document.title = t("title");
+    document.querySelectorAll("[data-i18n]").forEach((n) => {
+      n.textContent = t(n.getAttribute("data-i18n"));
+    });
+    document.querySelectorAll("[data-i18n-html]").forEach((n) => {
+      n.innerHTML = t(n.getAttribute("data-i18n-html"));   // authored copy, not remote data
+    });
+    $("footer-sources").innerHTML =
+      t("footer.sources").replace(/\{(\w+)\}/g, (m, k) => I18N.LINKS[k] || m);
+    $("stripes").setAttribute("aria-label", t("stripes.aria"));
+    $("meter-15-bar").setAttribute("aria-label", t("clock.aria15"));
+    $("meter-20-bar").setAttribute("aria-label", t("clock.aria20"));
+    $("lang-switch").setAttribute("aria-label", t("ui.langAria"));
+  }
+
+  function buildLangSwitch() {
+    const nav = $("lang-switch");
+    nav.textContent = "";
+    LANG_ORDER.forEach((code) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.textContent = code.toUpperCase();
+      b.title = I18N.LANGS[code].name;
+      b.lang = code;
+      b.setAttribute("aria-pressed", code === lang ? "true" : "false");
+      b.addEventListener("click", () => setLang(code));
+      nav.appendChild(b);
+    });
+  }
+
+  function setLang(code) {
+    if (!I18N.LANGS[code] || code === lang) return;
+    lang = code;
+    try { localStorage.setItem("evs-lang", code); } catch (e) { /* private mode */ }
+    buildFormatters();
+    applyStatic();
+    buildLangSwitch();
+    heroSeasonNote();
+    renderHero();
+    tickSims();
+    tickClock();
+    renderLoops();
+    renderBalancers();
+    renderAll();
+    renderLiveLabels();
+  }
+
+  /* ----------------------------------------------------------
      Boot
      ---------------------------------------------------------- */
   function renderAll() {
@@ -1013,7 +1124,9 @@
     resizeTimer = setTimeout(renderAll, 160);
   });
 
-  $("data-stamp").textContent = "embedded dataset through 2024 · waiting for live feed";
+  applyStatic();
+  buildLangSwitch();
+  renderLiveLabels();
   startHero();
   tickSims();
   setInterval(tickSims, 100);
