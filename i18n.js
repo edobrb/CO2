@@ -16,7 +16,8 @@ window.I18N = (function () {
     cee26: '<a href="https://www.nature.com/articles/s43247-026-03189-5" rel="noopener">Communications Earth &amp; Environment 2026</a>',
     gcb24: '<a href="https://essd.copernicus.org/articles/17/965/2025/" rel="noopener">Global Carbon Budget 2024</a>',
     cee25: '<a href="https://www.nature.com/articles/s43247-025-02606-5" rel="noopener">Communications Earth &amp; Environment 2025</a>',
-    pnas25: '<a href="https://www.pnas.org/doi/10.1073/pnas.2418813122" rel="noopener">PNAS 2025</a>'
+    pnas25: '<a href="https://www.pnas.org/doi/10.1073/pnas.2418813122" rel="noopener">PNAS 2025</a>',
+    nat24: '<a href="https://www.nature.com/articles/s41586-024-07878-z" rel="noopener">Byrne et al., Nature 2024</a>'
   };
 
   const LANGS = {
@@ -108,8 +109,9 @@ window.I18N = (function () {
         note: "Stabilization wins — but only by about a third of its own strength. That narrow margin is what sets climate sensitivity near 3 °C per CO₂ doubling." }
     },
     loopsSec: {
-      h2: "Five loops already turning",
-      lede: "Each of these is a circle you can trace with a finger: warming enters at the top and comes back out larger. Hover over a ring to slow it down."
+      h2: "Six loops already turning",
+      lede: "Warming enters each chain and comes out larger — then the loop feeds it straight back in. Hover over a card to light its circuit; open “why it matters” for the full story.",
+      more: "why it matters"
     },
     loopAria: { cycle: "Feedback cycle: {steps}, returning to the start.", then: ", then " },
     warn: {
@@ -141,6 +143,13 @@ window.I18N = (function () {
         statUnit: "the air's carbon",
         statLabel: "1,100–1,700 Gt of carbon lies frozen in northern permafrost — about twice as much as the whole atmosphere holds",
         body: "Frozen ground has kept dead plants on pause for tens of thousands of years. When it thaws, microbes finish the meal they began in the last ice age, releasing CO₂ and methane — and over its first 20 years methane traps about <strong>80× more heat than CO₂</strong>. Counting permafrost and wildfire carbon shrinks the remaining 1.5 °C budget by <strong>25% ± 12%</strong>."
+      },
+      fire: {
+        title: "The burning fuse",
+        steps: ["Warming", "Forests dry out", "Fires release\nCO₂ + soot", "More warming"],
+        statUnit: "Gt CO₂",
+        statLabel: "released by Canada's record 2023 fire season — about four times the country's fossil-fuel emissions",
+        body: "Heat manufactures fuel: warmer air pulls moisture out of plants and soil, so forests burn hotter, deeper and farther north. Canada's 2023 fires released about <strong>2.4 Gt of CO₂</strong>, and boreal fires increasingly burn <strong>peat</strong> — carbon that took millennia to store. Their soot drifts onto distant ice and darkens it, feeding the vanishing-mirror loop above."
       },
       sinks: {
         title: "The tiring sponge",
@@ -200,8 +209,8 @@ window.I18N = (function () {
         body: "CO₂ works like a blanket around the planet, and every year we knit it a little thicker. The extra heat it now traps equals about <strong>10 Hiroshima explosions per second</strong> — and roughly 90% of it is absorbed by the ocean." }
     },
     footer: {
-      sources: "<strong>Sources &amp; honesty box.</strong> CO₂: NOAA Global Monitoring Lab (Mauna Loa). Temperature: NASA GISTEMP. Live feeds via the open {gw} API, with embedded fallback data when offline. Emission rate &amp; carbon budgets: Global Carbon Budget 2024, IPCC AR6. Projections: IPCC AR6 / Climate Action Tracker central estimates. Feedback parameters: {ipcc7} (Table 7.10). Ice-albedo forcing: {pnas14} and {grl19}. Permafrost carbon and the budget reduction: {nree21} and {cee26}. Carbon-sink weakening: {gcb24}. Amazon dieback: {cee25} and {pnas25}. Between readings, values are <em>interpolated</em> from the latest measured trend and seasonal cycle — the ticking digits are an estimate; the direction is a measurement. This is an independent educational visualization, not an official product of these agencies.",
-      fine: "Built with plain HTML/SVG",
+      sources: "<strong>Sources &amp; honesty box.</strong> CO₂: NOAA Global Monitoring Lab (Mauna Loa). Temperature: NASA GISTEMP. Live feeds via the open {gw} API, with embedded fallback data when offline. Emission rate &amp; carbon budgets: Global Carbon Budget 2024, IPCC AR6. Projections: IPCC AR6 / Climate Action Tracker central estimates. Feedback parameters: {ipcc7} (Table 7.10). Ice-albedo forcing: {pnas14} and {grl19}. Permafrost carbon and the budget reduction: {nree21} and {cee26}. Carbon-sink weakening: {gcb24}. Amazon dieback: {cee25} and {pnas25}. Canada's 2023 fire emissions: {nat24}. Between readings, values are <em>interpolated</em> from the latest measured trend and seasonal cycle — the ticking digits are an estimate; the direction is a measurement. This is an independent educational visualization, not an official product of these agencies.",
+      fine: "Built with plain HTML/SVG/canvas · globe: Natural Earth coastlines",
       stampWait: "embedded dataset through 2024 · waiting for live feed",
       stampLive: "live NOAA reading {date}"
     }
@@ -294,8 +303,9 @@ window.I18N = (function () {
         note: "La stabilizzazione vince — ma solo per circa un terzo della propria forza. È quel margine stretto a fissare la sensibilità climatica vicino a 3 °C per raddoppio della CO₂." }
     },
     loopsSec: {
-      h2: "Cinque circoli già in moto",
-      lede: "Ognuno è un cerchio che puoi seguire col dito: il riscaldamento entra in alto e ne esce più grande. Passa il mouse su un anello per rallentarlo."
+      h2: "Sei circoli già in moto",
+      lede: "Il riscaldamento entra in ogni catena e ne esce più grande — e il circuito lo rimanda al punto di partenza. Passa il mouse su una scheda per illuminarne il circuito; apri «perché conta» per la storia completa.",
+      more: "perché conta"
     },
     loopAria: { cycle: "Ciclo di retroazione: {steps}, per poi tornare all'inizio.", then: ", poi " },
     warn: {
@@ -327,6 +337,13 @@ window.I18N = (function () {
         statUnit: "il carbonio dell'aria",
         statLabel: "1.100–1.700 Gt di carbonio giacciono congelate nel permafrost — circa il doppio di quanto contiene l'intera atmosfera",
         body: "Il suolo gelato tiene in pausa piante morte da decine di migliaia di anni. Quando si scioglie, i microbi finiscono il pasto iniziato nell'ultima era glaciale, rilasciando CO₂ e metano — e nei primi 20 anni il metano trattiene circa <strong>80 volte più calore della CO₂</strong>. Contando il carbonio di permafrost e incendi, il budget residuo per 1,5 °C si riduce del <strong>25% ± 12%</strong>."
+      },
+      fire: {
+        title: "La miccia accesa",
+        steps: ["Riscaldamento", "Le foreste\nsi seccano", "Gli incendi liberano\nCO₂ + fuliggine", "Più riscaldamento"],
+        statUnit: "Gt di CO₂",
+        statLabel: "rilasciate dalla stagione record di incendi del Canada nel 2023 — circa quattro volte le emissioni fossili del Paese",
+        body: "Il caldo fabbrica combustibile: l'aria più calda sottrae umidità a piante e suolo, così le foreste bruciano più intense, più in profondità e più a nord. Gli incendi canadesi del 2023 hanno rilasciato circa <strong>2,4 Gt di CO₂</strong>, e i roghi boreali bruciano sempre più spesso la <strong>torba</strong> — carbonio accumulato in millenni. La loro fuliggine si deposita sui ghiacci lontani e li scurisce, alimentando lo specchio che svanisce qui sopra."
       },
       sinks: {
         title: "La spugna che si stanca",
@@ -386,8 +403,8 @@ window.I18N = (function () {
         body: "La CO₂ agisce come una coperta intorno al pianeta, e ogni anno la rendiamo un po' più spessa. Il calore extra che ora trattiene equivale a circa <strong>10 esplosioni di Hiroshima al secondo</strong> — e circa il 90% viene assorbito dall'oceano." }
     },
     footer: {
-      sources: "<strong>Fonti e patto di onestà.</strong> CO₂: NOAA Global Monitoring Lab (Mauna Loa). Temperatura: NASA GISTEMP. Dati live tramite l'API aperta {gw}, con dati incorporati di riserva quando offline. Tasso di emissione e budget di carbonio: Global Carbon Budget 2024, IPCC AR6. Proiezioni: stime centrali IPCC AR6 / Climate Action Tracker. Parametri di retroazione: {ipcc7} (tabella 7.10). Forzante ghiaccio-albedo: {pnas14} e {grl19}. Carbonio del permafrost e riduzione del budget: {nree21} e {cee26}. Indebolimento dei pozzi di carbonio: {gcb24}. Dieback amazzonico: {cee25} e {pnas25}. Tra una lettura e l'altra i valori sono <em>interpolati</em> dall'ultimo trend misurato e dal ciclo stagionale — le cifre che scorrono sono una stima; la direzione è una misurazione. Questa è una visualizzazione educativa indipendente, non un prodotto ufficiale di queste agenzie.",
-      fine: "Realizzato in semplice HTML/SVG",
+      sources: "<strong>Fonti e patto di onestà.</strong> CO₂: NOAA Global Monitoring Lab (Mauna Loa). Temperatura: NASA GISTEMP. Dati live tramite l'API aperta {gw}, con dati incorporati di riserva quando offline. Tasso di emissione e budget di carbonio: Global Carbon Budget 2024, IPCC AR6. Proiezioni: stime centrali IPCC AR6 / Climate Action Tracker. Parametri di retroazione: {ipcc7} (tabella 7.10). Forzante ghiaccio-albedo: {pnas14} e {grl19}. Carbonio del permafrost e riduzione del budget: {nree21} e {cee26}. Indebolimento dei pozzi di carbonio: {gcb24}. Dieback amazzonico: {cee25} e {pnas25}. Emissioni degli incendi canadesi del 2023: {nat24}. Tra una lettura e l'altra i valori sono <em>interpolati</em> dall'ultimo trend misurato e dal ciclo stagionale — le cifre che scorrono sono una stima; la direzione è una misurazione. Questa è una visualizzazione educativa indipendente, non un prodotto ufficiale di queste agenzie.",
+      fine: "Realizzato in semplice HTML/SVG/canvas · globo: coste Natural Earth",
       stampWait: "dati incorporati fino al 2024 · in attesa del feed live",
       stampLive: "lettura NOAA live {date}"
     }
@@ -480,8 +497,9 @@ window.I18N = (function () {
         note: "La stabilisation l'emporte — mais seulement d'environ un tiers de sa propre force. C'est cette marge étroite qui fixe la sensibilité climatique près de 3 °C par doublement du CO₂." }
     },
     loopsSec: {
-      h2: "Cinq boucles déjà en marche",
-      lede: "Chacune est un cercle que vous pouvez suivre du doigt : le réchauffement entre en haut et ressort plus grand. Survolez un anneau pour le ralentir."
+      h2: "Six boucles déjà en marche",
+      lede: "Le réchauffement entre dans chaque chaîne et en ressort plus fort — puis la boucle le renvoie au point de départ. Survolez une carte pour illuminer son circuit ; ouvrez « pourquoi c'est important » pour l'histoire complète.",
+      more: "pourquoi c'est important"
     },
     loopAria: { cycle: "Boucle de rétroaction : {steps}, puis retour au départ.", then: ", puis " },
     warn: {
@@ -513,6 +531,13 @@ window.I18N = (function () {
         statUnit: "le carbone de l'air",
         statLabel: "1 100 à 1 700 Gt de carbone gisent gelées dans le pergélisol — environ deux fois ce que contient toute l'atmosphère",
         body: "Le sol gelé garde des plantes mortes en pause depuis des dizaines de milliers d'années. Quand il dégèle, les microbes terminent le repas commencé à la dernière ère glaciaire, libérant CO₂ et méthane — et sur ses 20 premières années, le méthane retient environ <strong>80 fois plus de chaleur que le CO₂</strong>. En comptant le carbone du pergélisol et des feux, le budget restant pour 1,5 °C se réduit de <strong>25 % ± 12 %</strong>."
+      },
+      fire: {
+        title: "La mèche allumée",
+        steps: ["Réchauffement", "Les forêts\ns'assèchent", "Les feux libèrent\nCO₂ + suie", "Plus de\nréchauffement"],
+        statUnit: "Gt de CO₂",
+        statLabel: "libérées par la saison record des feux canadiens de 2023 — environ quatre fois les émissions fossiles du pays",
+        body: "La chaleur fabrique du combustible : un air plus chaud aspire l'humidité des plantes et des sols, et les forêts brûlent plus fort, plus profond et plus au nord. Les feux canadiens de 2023 ont libéré environ <strong>2,4 Gt de CO₂</strong>, et les feux boréaux brûlent de plus en plus la <strong>tourbe</strong> — un carbone accumulé pendant des millénaires. Leur suie se dépose sur des glaces lointaines et les assombrit, alimentant le miroir qui disparaît ci-dessus."
       },
       sinks: {
         title: "L'éponge qui se fatigue",
@@ -572,8 +597,8 @@ window.I18N = (function () {
         body: "Le CO₂ agit comme une couverture autour de la planète, et chaque année nous la tricotons un peu plus épaisse. La chaleur supplémentaire qu'elle piège désormais équivaut à environ <strong>10 explosions d'Hiroshima par seconde</strong> — dont près de 90 % absorbés par l'océan." }
     },
     footer: {
-      sources: "<strong>Sources et pacte d'honnêteté.</strong> CO₂ : NOAA Global Monitoring Lab (Mauna Loa). Température : NASA GISTEMP. Flux en direct via l'API ouverte {gw}, avec données intégrées de secours hors ligne. Taux d'émission et budgets carbone : Global Carbon Budget 2024, GIEC AR6. Projections : estimations centrales GIEC AR6 / Climate Action Tracker. Paramètres de rétroaction : {ipcc7} (tableau 7.10). Forçage glace-albédo : {pnas14} et {grl19}. Carbone du pergélisol et réduction du budget : {nree21} et {cee26}. Affaiblissement des puits de carbone : {gcb24}. Dépérissement amazonien : {cee25} et {pnas25}. Entre deux relevés, les valeurs sont <em>interpolées</em> à partir de la dernière tendance mesurée et du cycle saisonnier — les chiffres qui défilent sont une estimation ; la direction est une mesure. Ceci est une visualisation pédagogique indépendante, pas un produit officiel de ces agences.",
-      fine: "Construit en simple HTML/SVG",
+      sources: "<strong>Sources et pacte d'honnêteté.</strong> CO₂ : NOAA Global Monitoring Lab (Mauna Loa). Température : NASA GISTEMP. Flux en direct via l'API ouverte {gw}, avec données intégrées de secours hors ligne. Taux d'émission et budgets carbone : Global Carbon Budget 2024, GIEC AR6. Projections : estimations centrales GIEC AR6 / Climate Action Tracker. Paramètres de rétroaction : {ipcc7} (tableau 7.10). Forçage glace-albédo : {pnas14} et {grl19}. Carbone du pergélisol et réduction du budget : {nree21} et {cee26}. Affaiblissement des puits de carbone : {gcb24}. Dépérissement amazonien : {cee25} et {pnas25}. Émissions des feux canadiens de 2023 : {nat24}. Entre deux relevés, les valeurs sont <em>interpolées</em> à partir de la dernière tendance mesurée et du cycle saisonnier — les chiffres qui défilent sont une estimation ; la direction est une mesure. Ceci est une visualisation pédagogique indépendante, pas un produit officiel de ces agences.",
+      fine: "Construit en simple HTML/SVG/canvas · globe : littoraux Natural Earth",
       stampWait: "jeu de données intégré jusqu'à 2024 · en attente du flux en direct",
       stampLive: "relevé NOAA en direct {date}"
     }
@@ -666,8 +691,9 @@ window.I18N = (function () {
         note: "Die Stabilisierung gewinnt — aber nur mit etwa einem Drittel ihrer eigenen Stärke. Diese schmale Marge legt die Klimasensitivität auf rund 3 °C pro CO₂-Verdopplung fest." }
     },
     loopsSec: {
-      h2: "Fünf Schleifen, die sich schon drehen",
-      lede: "Jede ist ein Kreis, den man mit dem Finger nachfahren kann: Die Erwärmung geht oben hinein und kommt größer wieder heraus. Fahren Sie mit der Maus über einen Ring, um ihn zu verlangsamen."
+      h2: "Sechs Schleifen, die sich schon drehen",
+      lede: "Die Erwärmung tritt in jede Kette ein und kommt größer wieder heraus — die Schleife führt sie direkt zurück an den Anfang. Fahren Sie mit der Maus über eine Karte, um ihren Kreislauf aufleuchten zu lassen; öffnen Sie „warum es zählt“ für die ganze Geschichte.",
+      more: "warum es zählt"
     },
     loopAria: { cycle: "Rückkopplungskreis: {steps}, dann zurück zum Anfang.", then: ", dann " },
     warn: {
@@ -699,6 +725,13 @@ window.I18N = (function () {
         statUnit: "des Luft-Kohlenstoffs",
         statLabel: "1.100–1.700 Gt Kohlenstoff liegen gefroren im nördlichen Permafrost — etwa doppelt so viel, wie die gesamte Atmosphäre enthält",
         body: "Gefrorener Boden hält abgestorbene Pflanzen seit Zehntausenden von Jahren in der Warteschleife. Taut er, beenden Mikroben die Mahlzeit, die sie in der letzten Eiszeit begannen, und setzen CO₂ und Methan frei — und Methan hält in seinen ersten 20 Jahren etwa <strong>80-mal mehr Wärme zurück als CO₂</strong>. Rechnet man Permafrost- und Waldbrand-Kohlenstoff mit, schrumpft das verbleibende 1,5-°C-Budget um <strong>25 % ± 12 %</strong>."
+      },
+      fire: {
+        title: "Die brennende Lunte",
+        steps: ["Erwärmung", "Wälder trocknen aus", "Feuer setzen\nCO₂ + Ruß frei", "Mehr Erwärmung"],
+        statUnit: "Gt CO₂",
+        statLabel: "freigesetzt in Kanadas Rekord-Feuersaison 2023 — rund viermal so viel wie die fossilen Emissionen des Landes",
+        body: "Hitze erzeugt Brennstoff: Wärmere Luft entzieht Pflanzen und Böden Feuchtigkeit, also brennen Wälder heißer, tiefer und weiter nördlich. Kanadas Feuer von 2023 setzten rund <strong>2,4 Gt CO₂</strong> frei, und boreale Brände fressen sich zunehmend in den <strong>Torf</strong> — Kohlenstoff aus Jahrtausenden. Ihr Ruß legt sich auf fernes Eis und verdunkelt es — Nachschub für den verschwindenden Spiegel weiter oben."
       },
       sinks: {
         title: "Der ermüdende Schwamm",
@@ -758,8 +791,8 @@ window.I18N = (function () {
         body: "CO₂ wirkt wie eine Decke um den Planeten, und jedes Jahr stricken wir sie etwas dicker. Die zusätzliche Wärme, die sie inzwischen zurückhält, entspricht etwa <strong>10 Hiroshima-Explosionen pro Sekunde</strong> — rund 90 % davon schluckt der Ozean." }
     },
     footer: {
-      sources: "<strong>Quellen &amp; Ehrlichkeitskasten.</strong> CO₂: NOAA Global Monitoring Lab (Mauna Loa). Temperatur: NASA GISTEMP. Live-Daten über die offene {gw}-API, mit eingebetteten Ersatzdaten für den Offline-Fall. Emissionsrate &amp; Kohlenstoffbudgets: Global Carbon Budget 2024, IPCC AR6. Projektionen: zentrale Schätzungen IPCC AR6 / Climate Action Tracker. Rückkopplungsparameter: {ipcc7} (Tabelle 7.10). Eis-Albedo-Antrieb: {pnas14} und {grl19}. Permafrost-Kohlenstoff und Budgetreduktion: {nree21} und {cee26}. Schwächung der Kohlenstoffsenken: {gcb24}. Amazonas-Dieback: {cee25} und {pnas25}. Zwischen den Messungen werden die Werte aus dem letzten gemessenen Trend und dem Jahreszyklus <em>interpoliert</em> — die tickenden Ziffern sind eine Schätzung; die Richtung ist eine Messung. Dies ist eine unabhängige Bildungsvisualisierung, kein offizielles Produkt dieser Institutionen.",
-      fine: "Gebaut mit reinem HTML/SVG",
+      sources: "<strong>Quellen &amp; Ehrlichkeitskasten.</strong> CO₂: NOAA Global Monitoring Lab (Mauna Loa). Temperatur: NASA GISTEMP. Live-Daten über die offene {gw}-API, mit eingebetteten Ersatzdaten für den Offline-Fall. Emissionsrate &amp; Kohlenstoffbudgets: Global Carbon Budget 2024, IPCC AR6. Projektionen: zentrale Schätzungen IPCC AR6 / Climate Action Tracker. Rückkopplungsparameter: {ipcc7} (Tabelle 7.10). Eis-Albedo-Antrieb: {pnas14} und {grl19}. Permafrost-Kohlenstoff und Budgetreduktion: {nree21} und {cee26}. Schwächung der Kohlenstoffsenken: {gcb24}. Amazonas-Dieback: {cee25} und {pnas25}. Emissionen der kanadischen Feuer 2023: {nat24}. Zwischen den Messungen werden die Werte aus dem letzten gemessenen Trend und dem Jahreszyklus <em>interpoliert</em> — die tickenden Ziffern sind eine Schätzung; die Richtung ist eine Messung. Dies ist eine unabhängige Bildungsvisualisierung, kein offizielles Produkt dieser Institutionen.",
+      fine: "Gebaut mit reinem HTML/SVG/Canvas · Globus: Natural-Earth-Küstenlinien",
       stampWait: "eingebetteter Datensatz bis 2024 · warte auf Live-Feed",
       stampLive: "Live-NOAA-Messung {date}"
     }
@@ -852,8 +885,9 @@ window.I18N = (function () {
         note: "La estabilización gana — pero solo por cerca de un tercio de su propia fuerza. Ese margen estrecho es lo que fija la sensibilidad climática cerca de 3 °C por duplicación del CO₂." }
     },
     loopsSec: {
-      h2: "Cinco bucles que ya están girando",
-      lede: "Cada uno es un círculo que puedes recorrer con el dedo: el calentamiento entra por arriba y sale más grande. Pasa el ratón sobre un anillo para frenarlo."
+      h2: "Seis bucles que ya están girando",
+      lede: "El calentamiento entra en cada cadena y sale más grande — y el bucle lo devuelve al punto de partida. Pasa el ratón sobre una tarjeta para iluminar su circuito; abre «por qué importa» para la historia completa.",
+      more: "por qué importa"
     },
     loopAria: { cycle: "Ciclo de retroalimentación: {steps}, y vuelta al inicio.", then: ", luego " },
     warn: {
@@ -885,6 +919,13 @@ window.I18N = (function () {
         statUnit: "el carbono del aire",
         statLabel: "1.100–1.700 Gt de carbono yacen congeladas en el permafrost — cerca del doble de lo que contiene toda la atmósfera",
         body: "El suelo helado lleva decenas de miles de años manteniendo en pausa plantas muertas. Al descongelarse, los microbios terminan la comida que empezaron en la última glaciación, liberando CO₂ y metano — y en sus primeros 20 años el metano atrapa unas <strong>80 veces más calor que el CO₂</strong>. Contando el carbono del permafrost y de los incendios, el presupuesto restante para 1,5 °C se reduce un <strong>25% ± 12%</strong>."
+      },
+      fire: {
+        title: "La mecha encendida",
+        steps: ["Calentamiento", "Los bosques\nse secan", "Los incendios liberan\nCO₂ + hollín", "Más calentamiento"],
+        statUnit: "Gt de CO₂",
+        statLabel: "liberadas en la temporada récord de incendios de Canadá en 2023 — unas cuatro veces las emisiones fósiles del país",
+        body: "El calor fabrica combustible: el aire más cálido extrae la humedad de plantas y suelos, y los bosques arden con más fuerza, a más profundidad y más al norte. Los incendios canadienses de 2023 liberaron cerca de <strong>2,4 Gt de CO₂</strong>, y los fuegos boreales queman cada vez más <strong>turba</strong> — carbono acumulado durante milenios. Su hollín se posa sobre hielos lejanos y los oscurece, alimentando el espejo que se desvanece de más arriba."
       },
       sinks: {
         title: "La esponja que se cansa",
@@ -944,8 +985,8 @@ window.I18N = (function () {
         body: "El CO₂ funciona como una manta alrededor del planeta, y cada año la tejemos un poco más gruesa. El calor extra que ahora atrapa equivale a unas <strong>10 explosiones de Hiroshima por segundo</strong> — y cerca del 90% lo absorbe el océano." }
     },
     footer: {
-      sources: "<strong>Fuentes y caja de honestidad.</strong> CO₂: NOAA Global Monitoring Lab (Mauna Loa). Temperatura: NASA GISTEMP. Datos en directo mediante la API abierta {gw}, con datos incorporados de respaldo sin conexión. Tasa de emisiones y presupuestos de carbono: Global Carbon Budget 2024, IPCC AR6. Proyecciones: estimaciones centrales del IPCC AR6 / Climate Action Tracker. Parámetros de retroalimentación: {ipcc7} (tabla 7.10). Forzamiento hielo-albedo: {pnas14} y {grl19}. Carbono del permafrost y reducción del presupuesto: {nree21} y {cee26}. Debilitamiento de los sumideros: {gcb24}. Colapso amazónico: {cee25} y {pnas25}. Entre lecturas, los valores se <em>interpolan</em> a partir de la última tendencia medida y del ciclo estacional — los dígitos que avanzan son una estimación; la dirección es una medición. Esta es una visualización educativa independiente, no un producto oficial de estas agencias.",
-      fine: "Hecho con HTML/SVG sin más",
+      sources: "<strong>Fuentes y caja de honestidad.</strong> CO₂: NOAA Global Monitoring Lab (Mauna Loa). Temperatura: NASA GISTEMP. Datos en directo mediante la API abierta {gw}, con datos incorporados de respaldo sin conexión. Tasa de emisiones y presupuestos de carbono: Global Carbon Budget 2024, IPCC AR6. Proyecciones: estimaciones centrales del IPCC AR6 / Climate Action Tracker. Parámetros de retroalimentación: {ipcc7} (tabla 7.10). Forzamiento hielo-albedo: {pnas14} y {grl19}. Carbono del permafrost y reducción del presupuesto: {nree21} y {cee26}. Debilitamiento de los sumideros: {gcb24}. Colapso amazónico: {cee25} y {pnas25}. Emisiones de los incendios canadienses de 2023: {nat24}. Entre lecturas, los valores se <em>interpolan</em> a partir de la última tendencia medida y del ciclo estacional — los dígitos que avanzan son una estimación; la dirección es una medición. Esta es una visualización educativa independiente, no un producto oficial de estas agencias.",
+      fine: "Hecho con HTML/SVG/canvas sin más · globo: costas de Natural Earth",
       stampWait: "datos incorporados hasta 2024 · esperando el feed en directo",
       stampLive: "lectura NOAA en directo {date}"
     }
@@ -1038,8 +1079,9 @@ window.I18N = (function () {
         note: "A estabilização vence — mas só por cerca de um terço da própria força. É essa margem estreita que fixa a sensibilidade climática perto de 3 °C por duplicação do CO₂." }
     },
     loopsSec: {
-      h2: "Cinco ciclos que já estão girando",
-      lede: "Cada um é um círculo que você pode acompanhar com o dedo: o aquecimento entra por cima e sai maior. Passe o mouse sobre um anel para desacelerá-lo."
+      h2: "Seis ciclos que já estão girando",
+      lede: "O aquecimento entra em cada cadeia e sai maior — e o ciclo o devolve ao ponto de partida. Passe o mouse sobre um cartão para iluminar seu circuito; abra “por que importa” para a história completa.",
+      more: "por que importa"
     },
     loopAria: { cycle: "Ciclo de retroalimentação: {steps}, e volta ao início.", then: ", depois " },
     warn: {
@@ -1071,6 +1113,13 @@ window.I18N = (function () {
         statUnit: "o carbono do ar",
         statLabel: "1.100–1.700 Gt de carbono jazem congeladas no permafrost — cerca do dobro do que toda a atmosfera contém",
         body: "O solo congelado mantém plantas mortas em pausa há dezenas de milhares de anos. Quando descongela, os micróbios terminam a refeição que começaram na última era glacial, liberando CO₂ e metano — e nos primeiros 20 anos o metano prende cerca de <strong>80 vezes mais calor que o CO₂</strong>. Contando o carbono do permafrost e dos incêndios, o orçamento restante para 1,5 °C encolhe <strong>25% ± 12%</strong>."
+      },
+      fire: {
+        title: "O pavio aceso",
+        steps: ["Aquecimento", "As florestas\nsecam", "Os incêndios liberam\nCO₂ + fuligem", "Mais aquecimento"],
+        statUnit: "Gt de CO₂",
+        statLabel: "liberadas na temporada recorde de incêndios do Canadá em 2023 — cerca de quatro vezes as emissões fósseis do país",
+        body: "O calor fabrica combustível: o ar mais quente extrai a umidade de plantas e solos, e as florestas queimam com mais força, mais fundo e mais ao norte. Os incêndios canadenses de 2023 liberaram cerca de <strong>2,4 Gt de CO₂</strong>, e os fogos boreais queimam cada vez mais <strong>turfa</strong> — carbono acumulado ao longo de milênios. Sua fuligem pousa sobre gelos distantes e os escurece, alimentando o espelho que desaparece logo acima."
       },
       sinks: {
         title: "A esponja que se cansa",
@@ -1130,8 +1179,8 @@ window.I18N = (function () {
         body: "O CO₂ age como um cobertor em volta do planeta, e a cada ano nós o tecemos um pouco mais grosso. O calor extra que ele prende agora equivale a cerca de <strong>10 explosões de Hiroshima por segundo</strong> — e uns 90% disso o oceano absorve." }
     },
     footer: {
-      sources: "<strong>Fontes e caixa de honestidade.</strong> CO₂: NOAA Global Monitoring Lab (Mauna Loa). Temperatura: NASA GISTEMP. Dados ao vivo pela API aberta {gw}, com dados embutidos de reserva quando offline. Taxa de emissões e orçamentos de carbono: Global Carbon Budget 2024, IPCC AR6. Projeções: estimativas centrais do IPCC AR6 / Climate Action Tracker. Parâmetros de retroalimentação: {ipcc7} (tabela 7.10). Forçamento gelo-albedo: {pnas14} e {grl19}. Carbono do permafrost e redução do orçamento: {nree21} e {cee26}. Enfraquecimento dos sumidouros: {gcb24}. Colapso amazônico: {cee25} e {pnas25}. Entre leituras, os valores são <em>interpolados</em> a partir da última tendência medida e do ciclo sazonal — os dígitos que correm são uma estimativa; a direção é uma medição. Esta é uma visualização educativa independente, não um produto oficial dessas agências.",
-      fine: "Feito com HTML/SVG puro",
+      sources: "<strong>Fontes e caixa de honestidade.</strong> CO₂: NOAA Global Monitoring Lab (Mauna Loa). Temperatura: NASA GISTEMP. Dados ao vivo pela API aberta {gw}, com dados embutidos de reserva quando offline. Taxa de emissões e orçamentos de carbono: Global Carbon Budget 2024, IPCC AR6. Projeções: estimativas centrais do IPCC AR6 / Climate Action Tracker. Parâmetros de retroalimentação: {ipcc7} (tabela 7.10). Forçamento gelo-albedo: {pnas14} e {grl19}. Carbono do permafrost e redução do orçamento: {nree21} e {cee26}. Enfraquecimento dos sumidouros: {gcb24}. Colapso amazônico: {cee25} e {pnas25}. Emissões dos incêndios canadenses de 2023: {nat24}. Entre leituras, os valores são <em>interpolados</em> a partir da última tendência medida e do ciclo sazonal — os dígitos que correm são uma estimativa; a direção é uma medição. Esta é uma visualização educativa independente, não um produto oficial dessas agências.",
+      fine: "Feito com HTML/SVG/canvas puro · globo: costas do Natural Earth",
       stampWait: "dados embutidos até 2024 · aguardando o feed ao vivo",
       stampLive: "leitura NOAA ao vivo {date}"
     }

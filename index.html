@@ -18,6 +18,7 @@
 
 <!-- ============ HERO — the number that runs the thermostat ============ -->
 <header class="hero" id="top">
+  <canvas id="earth" class="earth-canvas" aria-hidden="true"></canvas>
   <p class="hero-kicker">
     <span class="live-dot" id="live-dot" aria-hidden="true"></span>
     <span id="live-label" data-i18n="hero.liveWait">interpolated from the latest NOAA reading</span>
@@ -154,7 +155,7 @@
 
   <!-- the amplifying loops, as mechanisms -->
   <section class="section">
-    <h2 class="section-title" data-i18n="loopsSec.h2">Five loops already turning</h2>
+    <h2 class="section-title" data-i18n="loopsSec.h2">Six loops already turning</h2>
     <p class="section-lede" data-i18n="loopsSec.lede">Each of these is a circle you can trace with a finger: warming enters at the top
       and comes back out larger. Hover over a ring to slow it down.</p>
     <div class="loop-grid" id="loop-grid"></div>
@@ -272,10 +273,11 @@
       and <a href="https://www.nature.com/articles/s43247-026-03189-5" rel="noopener">Communications Earth &amp; Environment 2026</a>.
       Carbon-sink weakening: <a href="https://essd.copernicus.org/articles/17/965/2025/" rel="noopener">Global Carbon Budget 2024</a>.
       Amazon dieback: <a href="https://www.nature.com/articles/s43247-025-02606-5" rel="noopener">Communications Earth &amp; Environment 2025</a>
-      and <a href="https://www.pnas.org/doi/10.1073/pnas.2418813122" rel="noopener">PNAS 2025</a>. Between readings, values are
+      and <a href="https://www.pnas.org/doi/10.1073/pnas.2418813122" rel="noopener">PNAS 2025</a>.
+      Canada's 2023 fire emissions: <a href="https://www.nature.com/articles/s41586-024-07878-z" rel="noopener">Byrne et al., Nature 2024</a>. Between readings, values are
       <em>interpolated</em> from the latest measured trend and seasonal cycle — the ticking digits are an estimate;
       the direction is a measurement. This is an independent educational visualization, not an official product of these agencies.</p>
-    <p class="footer-fine"><span data-i18n="footer.fine">Built with plain HTML/SVG</span> · <span id="data-stamp"></span></p>
+    <p class="footer-fine"><span data-i18n="footer.fine">Built with plain HTML/SVG/canvas · globe: Natural Earth coastlines</span> · <span id="data-stamp"></span></p>
   </footer>
 
 </main>
@@ -285,6 +287,8 @@
 
 <script src="data.js"></script>
 <script src="i18n.js"></script>
+<script src="earth-dots.js"></script>
+<script src="earth.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

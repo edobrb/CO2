@@ -487,6 +487,16 @@
       d.addEventListener("blur", hideTip);
       host.appendChild(d);
     });
+
+    // big anchor years at either end, straight on the stripes
+    [[data[0][0], "stripes-year"], [data[data.length - 1][0], "stripes-year stripes-year-end"]]
+      .forEach(([year, cls]) => {
+        const y = document.createElement("span");
+        y.className = cls;
+        y.setAttribute("aria-hidden", "true");
+        y.textContent = year;
+        host.appendChild(y);
+      });
   }
 
   /* ----------------------------------------------------------
@@ -740,129 +750,101 @@
   }
 
   /* ----------------------------------------------------------
-     The loop rings — each amplifying feedback as a real cycle
+     The loop circuits — each amplifying feedback as a compact
+     inline chain: the steps read left to right, and a circular
+     "+" badge closes the cycle (the classic reinforcing loop).
+     A pulse of light travels the chain; hovering the card
+     lights the whole thing up. The full story sits behind a
+     <details> toggle to keep the section short.
      ---------------------------------------------------------- */
-  function wrapLabel(text, max) {
-    // honor explicit newlines, then greedily wrap the rest
-    return text.split("\n").flatMap((chunk) => {
-      const words = chunk.split(" ");
-      const lines = [];
-      let cur = "";
-      words.forEach((w) => {
-        if (!cur) cur = w;
-        else if ((cur + " " + w).length <= max) cur += " " + w;
-        else { lines.push(cur); cur = w; }
-      });
-      if (cur) lines.push(cur);
-      return lines;
-    });
-  }
-
-  function loopRing(loop) {
-    const VW = 250, VH = 196, cx = VW / 2, cy = 80, R = 52;
-    const svg = el("svg", {
-      viewBox: `0 0 ${VW} ${VH}`, class: "loop-ring", role: "img",
-      "aria-label": fill(t("loopAria.cycle"), {
-        steps: loop.steps.map((s) => s.replace(/\n/g, " ")).join(t("loopAria.then"))
-      })
-    }, null);
-
-    // the ring itself
-    el("circle", { cx, cy, r: R, fill: "none", stroke: "#2c2c2a", "stroke-width": 6 }, svg);
-    el("circle", {
-      cx, cy, r: R, fill: "none", stroke: cssColor("var(--serious)"),
-      "stroke-width": 2, opacity: 0.45
-    }, svg);
-    // the travelling comet — pathLength 100 keeps the animation seamless
-    el("circle", {
-      cx, cy, r: R, fill: "none", stroke: cssColor("var(--serious)"),
-      "stroke-width": 3, "stroke-linecap": "round", pathLength: 100,
-      "stroke-dasharray": "12 88", class: "loop-comet",
-      transform: `rotate(-90 ${cx} ${cy})`
-    }, svg);
-
-    // direction arrowheads, tangential, clockwise
-    [45, 135, 225, 315].forEach((deg) => {
-      const a = (deg - 90) * Math.PI / 180;
-      const px = cx + Math.cos(a) * R, py = cy + Math.sin(a) * R;
-      const tri = el("path", { d: "M -4 -3.4 L 4 0 L -4 3.4 Z", fill: cssColor("var(--serious)") }, svg);
-      tri.setAttribute("transform", `translate(${px.toFixed(1)} ${py.toFixed(1)}) rotate(${deg})`);
+  function loopFlow(loop) {
+    const flow = document.createElement("div");
+    flow.className = "flow";
+    const steps = loop.steps.slice(0, 4);
+    let slot = 0;                                  // pulse timing slot, along the chain
+    steps.forEach((step, i) => {
+      if (i) {
+        const ar = el("svg", { viewBox: "0 0 8 12", class: "flow-sep", "aria-hidden": "true" }, null);
+        ar.style.setProperty("--d", slot++);
+        el("path", { d: "M1 1 V11 L7.5 6 Z", fill: "currentColor" }, ar);
+        flow.appendChild(ar);
+      }
+      const chip = document.createElement("span");
+      chip.className = "flow-step"
+        + (i === 0 ? " is-start" : "")
+        + (i === steps.length - 1 ? " is-hot" : "");
+      chip.style.setProperty("--d", slot++);
+      chip.textContent = step.replace(/\n/g, " ");
+      flow.appendChild(chip);
     });
 
-    // the four step nodes + labels
-    const anchors = [
-      { deg: -90, ax: "middle", dx: 0, dy: -16, up: true },
-      { deg: 0, ax: "start", dx: 12, dy: 0, up: false },
-      { deg: 90, ax: "middle", dx: 0, dy: 20, up: false },
-      { deg: 180, ax: "end", dx: -12, dy: 0, up: false }
-    ];
-    loop.steps.slice(0, 4).forEach((step, i) => {
-      const cfg = anchors[i];
-      const a = cfg.deg * Math.PI / 180;
-      const nx = cx + Math.cos(a) * R, ny = cy + Math.sin(a) * R;
-      el("circle", {
-        cx: nx, cy: ny, r: 4.5, fill: cssColor("var(--serious)"),
-        stroke: "#1a1a19", "stroke-width": 2
-      }, svg);
-
-      const lines = wrapLabel(step, 11);
-      const lx = nx + cfg.dx;
-      let ly = ny + cfg.dy;
-      if (cfg.up) ly -= (lines.length - 1) * 11;              // stack upward from the node
-      else if (cfg.deg === 0 || cfg.deg === 180) ly -= (lines.length - 1) * 5.5;  // centre vertically
-      const node = el("text", { x: lx, y: ly, "text-anchor": cfg.ax }, svg);
-      // side labels get ~58px before the SVG edge; squeeze unbreakable words
-      const avail = cfg.ax === "middle" ? 190 : 58;
-      lines.forEach((ln, j) => {
-        const attrs = { x: lx, dy: j === 0 ? 0 : 11 };
-        if (ln.length * 5.4 > avail) {
-          attrs.textLength = avail;
-          attrs.lengthAdjust = "spacingAndGlyphs";
-        }
-        const ts = el("tspan", attrs, node);
-        ts.textContent = ln;
-      });
-    });
-
-    // the headline number, inside the ring — scaled so it never touches the ring
-    const v = el("text", { x: cx, y: cy - 1, "text-anchor": "middle", class: "ring-center-val" }, svg);
-    const size = loop.stat.length <= 5 ? 20 : loop.stat.length <= 7 ? 16 : 13;
-    v.setAttribute("font-size", size);
-    v.textContent = loop.stat;
-    const u = el("text", { x: cx, y: cy + 13, "text-anchor": "middle", class: "ring-center-unit" }, svg);
-    u.textContent = loop.statUnit;
-    return svg;
+    // loop-back badge: circular arrow + the "+" of a reinforcing cycle
+    const back = el("svg", { viewBox: "0 0 22 22", class: "flow-loopback", "aria-hidden": "true" }, null);
+    back.style.setProperty("--d", slot);
+    el("path", {
+      d: "M 11 3 A 8 8 0 1 0 19 11",
+      fill: "none", stroke: "currentColor", "stroke-width": 2, "stroke-linecap": "round"
+    }, back);
+    el("path", { d: "M 10 0.5 L 15.5 3 L 10 5.5 Z", fill: "currentColor" }, back);
+    const plus = el("text", {
+      x: 11, y: 14.5, "text-anchor": "middle",
+      "font-size": 10, "font-weight": 700, fill: "currentColor"
+    }, back);
+    plus.textContent = "+";
+    flow.appendChild(back);
+    return flow;
   }
 
   function renderLoops() {
     const grid = $("loop-grid");
     grid.textContent = "";
-    C.LOOPS.forEach((raw) => {
+    C.LOOPS.forEach((raw, idx) => {
       const loop = { ...raw, ...t("loops." + raw.id) };
       const card = document.createElement("article");
       card.className = "loop";
+      // desynchronize the six pulses so the grid shimmers instead of blinking
+      card.style.setProperty("--stagger", (idx * 1.1).toFixed(1) + "s");
 
+      const wm = document.createElement("span");
+      wm.className = "loop-watermark";
+      wm.setAttribute("aria-hidden", "true");
+      wm.textContent = loop.icon;
+      card.appendChild(wm);
+
+      const head = document.createElement("div");
+      head.className = "loop-head";
       const h = document.createElement("h3");
       h.className = "loop-title";
-      const ic = document.createElement("span");
-      ic.className = "loop-icon";
-      ic.setAttribute("aria-hidden", "true");
-      ic.textContent = loop.icon;
-      h.appendChild(ic);
-      h.appendChild(document.createTextNode(loop.title));
-      card.appendChild(h);
-
-      card.appendChild(loopRing(loop));
+      h.textContent = loop.title;
+      const stat = document.createElement("p");
+      stat.className = "loop-stat";
+      const sv = document.createElement("b");
+      sv.textContent = loop.stat;
+      const su = document.createElement("span");
+      su.textContent = loop.statUnit;
+      stat.appendChild(sv);
+      stat.appendChild(su);
+      head.appendChild(h);
+      head.appendChild(stat);
+      card.appendChild(head);
 
       const sl = document.createElement("p");
       sl.className = "loop-stat-label";
       sl.textContent = loop.statLabel;
       card.appendChild(sl);
 
+      card.appendChild(loopFlow(loop));
+
+      const det = document.createElement("details");
+      det.className = "loop-more";
+      const sum = document.createElement("summary");
+      sum.textContent = t("loopsSec.more");
       const body = document.createElement("p");
       body.className = "loop-body";
       body.innerHTML = loop.body;   // authored copy, not remote data
-      card.appendChild(body);
+      det.appendChild(sum);
+      det.appendChild(body);
+      card.appendChild(det);
 
       grid.appendChild(card);
     });

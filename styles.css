@@ -106,7 +106,21 @@ strong { color: var(--ink); font-weight: 600; }
   align-items: center;
   text-align: center;
   padding: 48px 20px 24px;
+  overflow: hidden;
 }
+.hero > :not(.earth-canvas) { position: relative; z-index: 1; }
+
+/* the rotating globe behind the number */
+.earth-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0;
+  animation: earth-in 2s ease 0.2s forwards;
+}
+@keyframes earth-in { to { opacity: 1; } }
 
 .hero-kicker {
   font-size: 13px;
@@ -149,6 +163,11 @@ strong { color: var(--ink); font-weight: 600; }
   margin-top: 6px;
   letter-spacing: -0.02em;
   text-shadow: 0 0 60px hsla(var(--heat-hue), 80%, 55%, 0.25);
+  animation: hero-glow 6s ease-in-out infinite;
+}
+@keyframes hero-glow {
+  0%, 100% { text-shadow: 0 0 50px hsla(var(--heat-hue), 80%, 55%, 0.22); }
+  50%      { text-shadow: 0 0 110px hsla(var(--heat-hue), 85%, 60%, 0.45); }
 }
 .hero-decimals {
   font-size: 0.34em;
@@ -183,9 +202,18 @@ strong { color: var(--ink); font-weight: 600; }
 }
 .section-wide { max-width: none; padding-left: 0; padding-right: 0; }
 .section-title {
-  font-size: clamp(22px, 3vw, 30px);
+  font-size: clamp(24px, 3.4vw, 34px);
   margin-bottom: 22px;
   text-align: center;
+}
+.section-title::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 3px;
+  border-radius: 2px;
+  margin: 14px auto 0;
+  background: linear-gradient(90deg, var(--s-blue), var(--serious));
 }
 
 .card {
@@ -257,10 +285,24 @@ strong { color: var(--ink); font-weight: 600; }
 .stripes-head { max-width: 1100px; margin: 0 auto 18px; padding: 0 20px; }
 .stripes-head h2 { font-size: clamp(19px, 2.4vw, 24px); }
 .stripes {
+  position: relative;
   display: flex;
-  height: clamp(140px, 24vw, 240px);
+  height: clamp(160px, 26vw, 280px);
   width: 100%;
 }
+.stripes-year {
+  position: absolute;
+  bottom: 10px;
+  left: 14px;
+  font-size: clamp(20px, 3.4vw, 34px);
+  font-weight: 750;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.88);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.65);
+  pointer-events: none;
+  line-height: 1;
+}
+.stripes-year-end { left: auto; right: 14px; }
 .stripe { flex: 1 1 0%; min-width: 0; cursor: crosshair; }
 .stripe:hover, .stripe:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
 .stripes-scale {
@@ -301,44 +343,176 @@ strong { color: var(--ink); font-weight: 600; }
   color: var(--ink-2);
 }
 
-/* loop cards with ring diagrams */
+/* loop cards — compact: title + stat, inline circuit, story on demand */
 .loop-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 12px;
 }
 .loop {
-  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgba(236, 131, 90, 0.07), transparent 55%),
+    var(--surface);
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 20px 18px 18px;
+  padding: 16px 16px 12px;
   display: flex;
   flex-direction: column;
 }
-.loop-title {
-  font-size: 16.5px;
+.loop::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(236, 131, 90, 0.75), transparent);
+}
+.loop-watermark {
+  position: absolute;
+  bottom: 4px;
+  right: 10px;
+  font-size: 42px;
+  line-height: 1;
+  opacity: 0.10;
+  filter: grayscale(1);
+  pointer-events: none;
+  user-select: none;
+}
+.loop-head {
   display: flex;
-  align-items: center;
-  gap: 9px;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
 }
-.loop-title .loop-icon { font-size: 20px; line-height: 1; }
-
-.loop-ring { width: 100%; max-width: 260px; margin: 6px auto 2px; display: block; }
-.loop-ring text { font-size: 9.5px; fill: var(--ink-2); }
-.loop-ring .ring-center-val { font-size: 19px; font-weight: 700; fill: var(--ink); }
-.loop-ring .ring-center-unit { font-size: 8.5px; fill: var(--ink-3); letter-spacing: 0.06em; }
-.loop-comet { animation: orbit 5.5s linear infinite; }
-@keyframes orbit { to { stroke-dashoffset: -1000; } }
-.loop:hover .loop-comet, .loop:focus-within .loop-comet { animation-duration: 16s; }
-
-.loop-stat-label {
-  font-size: 12.5px;
+.loop-title { font-size: 15.5px; }
+.loop-stat {
+  flex: none;
+  max-width: 46%;
+  text-align: right;
+  line-height: 1;
+}
+.loop-stat b {
+  font-size: 25px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  color: var(--serious);
+  background: linear-gradient(105deg, #f6c290, var(--serious) 55%, #e05656);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.loop-stat span {
+  display: block;
+  margin-top: 3px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
   color: var(--ink-3);
-  text-align: center;
-  margin: 2px auto 12px;
-  max-width: 30ch;
 }
-.loop-body { font-size: 14px; color: var(--ink-2); margin-top: auto; }
+.loop-stat-label {
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--ink-3);
+  margin: 6px 0 10px;
+}
+
+/* the circuit, inline: steps read left to right, the badge closes the loop */
+.flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px 6px;
+  margin-bottom: 11px;
+}
+.flow-step {
+  --fb: var(--baseline);      /* resting border  */
+  --fi: var(--ink-2);         /* resting ink     */
+  border: 1px solid var(--fb);
+  color: var(--fi);
+  background: var(--surface-2);
+  border-radius: 7px;
+  padding: 3.5px 9px;
+  font-size: 11.5px;
+  line-height: 1.35;
+}
+.flow-step.is-start { --fi: var(--ink); font-weight: 600; }
+.flow-step.is-hot {
+  --fb: rgba(236, 131, 90, 0.5);
+  --fi: #f0b295;
+  background: rgba(236, 131, 90, 0.08);
+  font-weight: 600;
+}
+.flow-sep {
+  width: 7px;
+  height: 10px;
+  color: var(--ink-3);
+  flex: none;
+}
+.flow-loopback {
+  width: 19px;
+  height: 19px;
+  margin-left: 2px;
+  color: rgba(236, 131, 90, 0.55);
+  flex: none;
+}
+
+/* a pulse of light travels the chain, one element per slot */
+.flow-step {
+  animation: flow-pulse 5.6s linear infinite;
+  animation-delay: calc(var(--d) * 0.7s + var(--stagger, 0s));
+}
+.flow-sep {
+  animation: arrow-pulse 5.6s linear infinite;
+  animation-delay: calc(var(--d) * 0.7s + var(--stagger, 0s));
+}
+.flow-loopback {
+  animation: loopback-pulse 5.6s linear infinite;
+  animation-delay: calc(var(--d) * 0.7s + var(--stagger, 0s));
+}
+@keyframes flow-pulse {
+  0%, 13%, 100% { border-color: var(--fb); color: var(--fi); box-shadow: 0 0 0 0 rgba(236, 131, 90, 0); }
+  4%, 8%        { border-color: var(--serious); color: var(--ink); box-shadow: 0 0 14px 0 rgba(236, 131, 90, 0.3); }
+}
+@keyframes arrow-pulse {
+  0%, 13%, 100% { color: var(--ink-3); }
+  4%, 8%        { color: var(--serious); }
+}
+@keyframes loopback-pulse {
+  0%, 14%, 100% { color: rgba(236, 131, 90, 0.5); }
+  4%, 9%        { color: #ffb28c; }
+}
+
+/* hovering a card lights its whole circuit up for reading */
+.loop:hover .flow-step, .loop:focus-within .flow-step {
+  animation: none;
+  border-color: rgba(236, 131, 90, 0.75);
+  color: var(--ink);
+  box-shadow: 0 0 12px 0 rgba(236, 131, 90, 0.16);
+}
+.loop:hover .flow-sep, .loop:focus-within .flow-sep {
+  animation: none;
+  color: var(--serious);
+}
+.loop:hover .flow-loopback, .loop:focus-within .flow-loopback {
+  animation: none;
+  color: #ffb28c;
+}
+
+/* the full story, tucked behind a toggle */
+.loop-more {
+  margin-top: auto;
+  border-top: 1px solid var(--hairline);
+  padding-top: 8px;
+}
+.loop-more summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--ink-3);
+  user-select: none;
+}
+.loop-more summary:hover { color: var(--ink); }
+.loop-body { font-size: 13.5px; color: var(--ink-2); margin-top: 8px; }
 
 /* the "budget is generous" warning card */
 .card-warn {
@@ -359,7 +533,7 @@ strong { color: var(--ink); font-weight: 600; }
 .warn-body { margin-top: 10px; font-size: 15px; color: var(--ink-2); max-width: 80ch; }
 
 @media (prefers-reduced-motion: reduce) {
-  .loop-comet { animation: none; }
+  .flow-step, .flow-sep, .flow-loopback { animation: none; }
 }
 
 /* ============ CARBON CLOCK ============ */
@@ -384,6 +558,10 @@ strong { color: var(--ink); font-weight: 600; }
   font-weight: 700;
   color: var(--ink);
   line-height: 1.1;
+  background: linear-gradient(180deg, var(--ink) 30%, #f2a37c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .clock-seg i {
   font-style: normal;
@@ -498,12 +676,28 @@ strong { color: var(--ink); font-weight: 600; }
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s ease; }
 .reveal.in { opacity: 1; transform: none; }
 
+/* small cards lift toward the light on hover */
+.tile, .sim, .fact, .loop {
+  transition: opacity 0.7s ease, transform 0.45s ease, border-color 0.45s ease, box-shadow 0.45s ease;
+}
+@media (hover: hover) {
+  .tile:hover, .sim:hover, .fact:hover, .loop:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.22);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  }
+}
+
 .noscript { padding: 40px; text-align: center; color: var(--ink); }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .live-dot.is-live { animation: none; }
   .reveal { opacity: 1; transform: none; transition: none; }
+  .tile, .sim, .fact, .loop { transition: none; }
+  .tile:hover, .sim:hover, .fact:hover, .loop:hover { transform: none; }
+  .hero-number { animation: none; }
+  .earth-canvas { animation: none; opacity: 1; }
   .heat-veil { transition: none; }
   .meter-fill { transition: none; }
 }

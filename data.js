@@ -186,6 +186,13 @@ window.CLIMATE = (function () {
       body: "Frozen ground has kept plant matter on pause for tens of thousands of years. Thaw it and microbes finish the meal they started in the last ice age, exhaling CO₂ and methane — and methane traps about <strong>80× more heat than CO₂</strong> over its first 20 years. Counting permafrost and wildfire carbon shrinks the remaining 1.5 °C budget by <strong>25% ± 12%</strong>."
     },
     {
+      id: "fire", icon: "🔥", title: "The burning fuse",
+      steps: ["Warming", "Forests dry out", "Fires release\nCO₂ + soot", "More warming"],
+      stat: "2.4", statUnit: "Gt CO₂",
+      statLabel: "released by Canada's record 2023 fire season — about four times the country's fossil-fuel emissions",
+      body: "Heat manufactures fuel: warmer air pulls moisture out of plants and soil, so forests burn hotter, deeper and farther north. Canada's 2023 fires released about <strong>2.4 Gt of CO₂</strong>, and boreal fires increasingly burn <strong>peat</strong> — carbon that took millennia to store. Their soot drifts onto distant ice and darkens it, feeding the vanishing-mirror loop above."
+    },
+    {
       id: "sinks", icon: "🌊", title: "The tiring sponge",
       steps: ["Warming", "Sinks weaken", "More CO₂ stays\nin the air", "More warming"],
       stat: "~15%", statUnit: "weaker",
