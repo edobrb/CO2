@@ -92,9 +92,10 @@ window.I18N = (function () {
       legendAmp: "Amplifying — adds heat",
       legendStab: "Stabilizing — sheds heat",
       legendWhisker: "Whisker = assessed range",
+      legendPush: "The push — our forcing ÷ warming so far",
       tblHead: ["Feedback", "W/m²/°C", "Range", "Effect"],
-      amp: "amplifying", stab: "stabilizing", net: "net balance",
-      aria: "Diverging bar chart of IPCC AR6 climate feedback parameters in watts per square metre per degree Celsius. Water vapour plus lapse rate +1.30, clouds +0.42, surface albedo +0.35 amplify warming; the Planck response −3.22 stabilizes it; the net feedback is −1.16."
+      amp: "amplifying", stab: "stabilizing", net: "net balance", push: "the push",
+      aria: "Diverging bar chart of IPCC AR6 climate feedback parameters in watts per square metre per degree Celsius. Water vapour plus lapse rate +1.30, clouds +0.42, surface albedo +0.35 amplify warming; the Planck response −3.22 stabilizes it; the net feedback is −1.16. Our forcing so far, divided by the warming so far, pushes in +2.0 — larger than the net pushback, so heat still accumulates."
     },
     feedbacks: {
       wv: { name: "Water vapour + lapse rate", short: "Water vapour",
@@ -105,6 +106,8 @@ window.I18N = (function () {
         note: "Melting ice and snow uncover dark land and ocean, which absorb the sunlight the ice used to reflect back to space." },
       planck: { name: "Planck response", short: "Planck response",
         note: "The great stabilizer: a warmer body radiates more heat away. This single term is why Earth settles at a new temperature instead of overheating without limit." },
+      push: { name: "The push — our forcing so far", short: "Our push",
+        note: "Not a feedback — the push itself: the heat-trapping forcing of everything we have emitted (~2.9 W/m²), divided by the warming so far (~1.45 °C). While this bar reaches farther right than the net feedback reaches left, the planet keeps accumulating heat; warming stops only once they match." },
       net: { name: "Net feedback", short: "NET",
         note: "Stabilization wins — but only by about a third of its own strength. That narrow margin is what sets climate sensitivity near 3 °C per CO₂ doubling." }
     },
@@ -286,9 +289,10 @@ window.I18N = (function () {
       legendAmp: "Amplificante — aggiunge calore",
       legendStab: "Stabilizzante — disperde calore",
       legendWhisker: "Baffo = intervallo stimato",
+      legendPush: "La spinta — forzante ÷ riscaldamento finora",
       tblHead: ["Retroazione", "W/m²/°C", "Intervallo", "Effetto"],
-      amp: "amplificante", stab: "stabilizzante", net: "bilancio netto",
-      aria: "Grafico a barre divergenti dei parametri di retroazione climatica IPCC AR6 in watt per metro quadrato per grado Celsius. Vapore acqueo più gradiente termico +1,30, nubi +0,42, albedo superficiale +0,35 amplificano il riscaldamento; la risposta di Planck −3,22 lo stabilizza; la retroazione netta è −1,16."
+      amp: "amplificante", stab: "stabilizzante", net: "bilancio netto", push: "la spinta",
+      aria: "Grafico a barre divergenti dei parametri di retroazione climatica IPCC AR6 in watt per metro quadrato per grado Celsius. Vapore acqueo più gradiente termico +1,30, nubi +0,42, albedo superficiale +0,35 amplificano il riscaldamento; la risposta di Planck −3,22 lo stabilizza; la retroazione netta è −1,16. Il nostro forzante finora, diviso per il riscaldamento finora, spinge dentro +2,0 — più del contrasto netto, quindi il calore continua ad accumularsi."
     },
     feedbacks: {
       wv: { name: "Vapore acqueo + gradiente termico", short: "Vapore acqueo",
@@ -299,6 +303,8 @@ window.I18N = (function () {
         note: "Lo scioglimento di ghiaccio e neve scopre terre e oceani scuri, che assorbono la luce solare che il ghiaccio rifletteva verso lo spazio." },
       planck: { name: "Risposta di Planck", short: "Risposta di Planck",
         note: "Il grande stabilizzatore: un corpo più caldo irradia più calore. Questo singolo termine è il motivo per cui la Terra si assesta su una nuova temperatura invece di surriscaldarsi senza limite." },
+      push: { name: "La spinta — il nostro forzante finora", short: "La spinta",
+        note: "Non è una retroazione — è la spinta stessa: il forzante di tutto ciò che abbiamo emesso (~2,9 W/m²), diviso per il riscaldamento finora (~1,45 °C). Finché questa barra arriva più a destra di quanto la retroazione netta arrivi a sinistra, il pianeta continua ad accumulare calore; il riscaldamento si ferma solo quando si eguagliano." },
       net: { name: "Retroazione netta", short: "NETTO",
         note: "La stabilizzazione vince — ma solo per circa un terzo della propria forza. È quel margine stretto a fissare la sensibilità climatica vicino a 3 °C per raddoppio della CO₂." }
     },
@@ -480,9 +486,10 @@ window.I18N = (function () {
       legendAmp: "Amplificatrice — ajoute de la chaleur",
       legendStab: "Stabilisatrice — évacue la chaleur",
       legendWhisker: "Moustache = intervalle évalué",
+      legendPush: "La poussée — forçage ÷ réchauffement à ce jour",
       tblHead: ["Rétroaction", "W/m²/°C", "Intervalle", "Effet"],
-      amp: "amplificatrice", stab: "stabilisatrice", net: "bilan net",
-      aria: "Graphique à barres divergentes des paramètres de rétroaction climatique du GIEC AR6 en watts par mètre carré par degré Celsius. Vapeur d'eau plus gradient thermique +1,30, nuages +0,42, albédo de surface +0,35 amplifient le réchauffement ; la réponse de Planck −3,22 le stabilise ; la rétroaction nette est de −1,16."
+      amp: "amplificatrice", stab: "stabilisatrice", net: "bilan net", push: "la poussée",
+      aria: "Graphique à barres divergentes des paramètres de rétroaction climatique du GIEC AR6 en watts par mètre carré par degré Celsius. Vapeur d'eau plus gradient thermique +1,30, nuages +0,42, albédo de surface +0,35 amplifient le réchauffement ; la réponse de Planck −3,22 le stabilise ; la rétroaction nette est de −1,16. Notre forçage à ce jour, divisé par le réchauffement observé, pousse +2,0 — plus que la riposte nette, donc la chaleur continue de s'accumuler."
     },
     feedbacks: {
       wv: { name: "Vapeur d'eau + gradient thermique", short: "Vapeur d'eau",
@@ -493,6 +500,8 @@ window.I18N = (function () {
         note: "La fonte de la glace et de la neige découvre des terres et des océans sombres, qui absorbent la lumière que la glace renvoyait vers l'espace." },
       planck: { name: "Réponse de Planck", short: "Réponse de Planck",
         note: "Le grand stabilisateur : un corps plus chaud rayonne davantage de chaleur. Ce seul terme explique pourquoi la Terre se stabilise à une nouvelle température au lieu de surchauffer sans limite." },
+      push: { name: "La poussée — notre forçage à ce jour", short: "La poussée",
+        note: "Pas une rétroaction — la poussée elle-même : le forçage de tout ce que nous avons émis (~2,9 W/m²), divisé par le réchauffement observé (~1,45 °C). Tant que cette barre va plus loin à droite que la rétroaction nette ne va à gauche, la planète continue d'accumuler de la chaleur ; le réchauffement ne s'arrête que lorsqu'elles s'égalisent." },
       net: { name: "Rétroaction nette", short: "NET",
         note: "La stabilisation l'emporte — mais seulement d'environ un tiers de sa propre force. C'est cette marge étroite qui fixe la sensibilité climatique près de 3 °C par doublement du CO₂." }
     },
@@ -674,9 +683,10 @@ window.I18N = (function () {
       legendAmp: "Verstärkend — fügt Wärme hinzu",
       legendStab: "Stabilisierend — gibt Wärme ab",
       legendWhisker: "Whisker = geschätzter Bereich",
+      legendPush: "Der Antrieb — Forcing ÷ bisherige Erwärmung",
       tblHead: ["Rückkopplung", "W/m²/°C", "Bereich", "Wirkung"],
-      amp: "verstärkend", stab: "stabilisierend", net: "Nettobilanz",
-      aria: "Divergierendes Balkendiagramm der IPCC-AR6-Klimarückkopplungsparameter in Watt pro Quadratmeter pro Grad Celsius. Wasserdampf plus Temperaturgradient +1,30, Wolken +0,42, Oberflächenalbedo +0,35 verstärken die Erwärmung; die Planck-Rückkopplung −3,22 stabilisiert sie; die Nettorückkopplung beträgt −1,16."
+      amp: "verstärkend", stab: "stabilisierend", net: "Nettobilanz", push: "der Antrieb",
+      aria: "Divergierendes Balkendiagramm der IPCC-AR6-Klimarückkopplungsparameter in Watt pro Quadratmeter pro Grad Celsius. Wasserdampf plus Temperaturgradient +1,30, Wolken +0,42, Oberflächenalbedo +0,35 verstärken die Erwärmung; die Planck-Rückkopplung −3,22 stabilisiert sie; die Nettorückkopplung beträgt −1,16. Unser bisheriges Forcing, geteilt durch die bisherige Erwärmung, drückt +2,0 hinein — mehr als die Nettogegenkraft, also sammelt sich weiter Wärme an."
     },
     feedbacks: {
       wv: { name: "Wasserdampf + Temperaturgradient", short: "Wasserdampf",
@@ -687,6 +697,8 @@ window.I18N = (function () {
         note: "Schmelzendes Eis und Schnee legen dunkles Land und dunklen Ozean frei, die das Sonnenlicht schlucken, das das Eis zuvor ins All zurückwarf." },
       planck: { name: "Planck-Rückkopplung", short: "Planck",
         note: "Der große Stabilisator: Ein wärmerer Körper strahlt mehr Wärme ab. Dieser eine Term ist der Grund, warum sich die Erde auf eine neue Temperatur einpendelt, statt grenzenlos zu überhitzen." },
+      push: { name: "Der Antrieb — unser Forcing bisher", short: "Unser Antrieb",
+        note: "Keine Rückkopplung — der Antrieb selbst: das Forcing all unserer Emissionen (~2,9 W/m²), geteilt durch die bisherige Erwärmung (~1,45 °C). Solange dieser Balken weiter nach rechts reicht als die Nettorückkopplung nach links, sammelt der Planet weiter Wärme an; die Erwärmung stoppt erst, wenn beide gleichauf liegen." },
       net: { name: "Nettorückkopplung", short: "NETTO",
         note: "Die Stabilisierung gewinnt — aber nur mit etwa einem Drittel ihrer eigenen Stärke. Diese schmale Marge legt die Klimasensitivität auf rund 3 °C pro CO₂-Verdopplung fest." }
     },
@@ -868,9 +880,10 @@ window.I18N = (function () {
       legendAmp: "Amplificadora — añade calor",
       legendStab: "Estabilizadora — disipa calor",
       legendWhisker: "Bigote = rango evaluado",
+      legendPush: "El empuje — forzamiento ÷ calentamiento hasta hoy",
       tblHead: ["Retroalimentación", "W/m²/°C", "Rango", "Efecto"],
-      amp: "amplificadora", stab: "estabilizadora", net: "balance neto",
-      aria: "Gráfico de barras divergentes de los parámetros de retroalimentación climática del IPCC AR6 en vatios por metro cuadrado por grado Celsius. Vapor de agua más gradiente térmico +1,30, nubes +0,42, albedo superficial +0,35 amplifican el calentamiento; la respuesta de Planck −3,22 lo estabiliza; la retroalimentación neta es −1,16."
+      amp: "amplificadora", stab: "estabilizadora", net: "balance neto", push: "el empuje",
+      aria: "Gráfico de barras divergentes de los parámetros de retroalimentación climática del IPCC AR6 en vatios por metro cuadrado por grado Celsius. Vapor de agua más gradiente térmico +1,30, nubes +0,42, albedo superficial +0,35 amplifican el calentamiento; la respuesta de Planck −3,22 lo estabiliza; la retroalimentación neta es −1,16. Nuestro forzamiento hasta hoy, dividido por el calentamiento observado, empuja +2,0 — más que la respuesta neta, así que el calor sigue acumulándose."
     },
     feedbacks: {
       wv: { name: "Vapor de agua + gradiente térmico", short: "Vapor de agua",
@@ -881,6 +894,8 @@ window.I18N = (function () {
         note: "El deshielo del hielo y la nieve destapa tierras y océanos oscuros, que absorben la luz solar que el hielo devolvía al espacio." },
       planck: { name: "Respuesta de Planck", short: "Respuesta de Planck",
         note: "El gran estabilizador: un cuerpo más caliente irradia más calor. Este único término es la razón de que la Tierra se asiente en una nueva temperatura en vez de sobrecalentarse sin límite." },
+      push: { name: "El empuje — nuestro forzamiento hasta hoy", short: "El empuje",
+        note: "No es una retroalimentación — es el empuje mismo: el forzamiento de todo lo que hemos emitido (~2,9 W/m²), dividido por el calentamiento observado (~1,45 °C). Mientras esta barra llegue más a la derecha de lo que la retroalimentación neta llega a la izquierda, el planeta sigue acumulando calor; el calentamiento solo se detiene cuando se igualan." },
       net: { name: "Retroalimentación neta", short: "NETO",
         note: "La estabilización gana — pero solo por cerca de un tercio de su propia fuerza. Ese margen estrecho es lo que fija la sensibilidad climática cerca de 3 °C por duplicación del CO₂." }
     },
@@ -1062,9 +1077,10 @@ window.I18N = (function () {
       legendAmp: "Amplificadora — adiciona calor",
       legendStab: "Estabilizadora — dissipa calor",
       legendWhisker: "Bigode = faixa avaliada",
+      legendPush: "O empurrão — forçamento ÷ aquecimento até agora",
       tblHead: ["Retroalimentação", "W/m²/°C", "Faixa", "Efeito"],
-      amp: "amplificadora", stab: "estabilizadora", net: "saldo líquido",
-      aria: "Gráfico de barras divergentes dos parâmetros de retroalimentação climática do IPCC AR6 em watts por metro quadrado por grau Celsius. Vapor d'água mais gradiente térmico +1,30, nuvens +0,42, albedo de superfície +0,35 amplificam o aquecimento; a resposta de Planck −3,22 o estabiliza; a retroalimentação líquida é −1,16."
+      amp: "amplificadora", stab: "estabilizadora", net: "saldo líquido", push: "o empurrão",
+      aria: "Gráfico de barras divergentes dos parâmetros de retroalimentação climática do IPCC AR6 em watts por metro quadrado por grau Celsius. Vapor d'água mais gradiente térmico +1,30, nuvens +0,42, albedo de superfície +0,35 amplificam o aquecimento; a resposta de Planck −3,22 o estabiliza; a retroalimentação líquida é −1,16. Nosso forçamento até agora, dividido pelo aquecimento até agora, empurra +2,0 — mais que a resposta líquida, então o calor segue se acumulando."
     },
     feedbacks: {
       wv: { name: "Vapor d'água + gradiente térmico", short: "Vapor d'água",
@@ -1075,6 +1091,8 @@ window.I18N = (function () {
         note: "O derretimento do gelo e da neve expõe terras e oceanos escuros, que absorvem a luz solar que o gelo devolvia ao espaço." },
       planck: { name: "Resposta de Planck", short: "Resposta de Planck",
         note: "O grande estabilizador: um corpo mais quente irradia mais calor. Esse único termo é o motivo de a Terra se acomodar numa nova temperatura em vez de superaquecer sem limite." },
+      push: { name: "O empurrão — nosso forçamento até agora", short: "O empurrão",
+        note: "Não é uma retroalimentação — é o próprio empurrão: o forçamento de tudo o que já emitimos (~2,9 W/m²), dividido pelo aquecimento até agora (~1,45 °C). Enquanto esta barra alcançar mais à direita do que a retroalimentação líquida alcança à esquerda, o planeta segue acumulando calor; o aquecimento só para quando as duas se igualam." },
       net: { name: "Retroalimentação líquida", short: "LÍQUIDO",
         note: "A estabilização vence — mas só por cerca de um terço da própria força. É essa margem estreita que fixa a sensibilidade climática perto de 3 °C por duplicação do CO₂." }
     },
