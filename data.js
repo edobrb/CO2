@@ -156,6 +156,13 @@ window.CLIMATE = (function () {
       note: "The great stabilizer: a warmer body radiates more heat. This single term is why Earth settles at a new temperature instead of running away."
     },
     {
+      /* not a feedback — the push the feedbacks react to: total anthropogenic
+         forcing (~2.9 W/m²) ÷ observed warming (~1.45 °C), same per-°C axis */
+      key: "push", name: "The push — our forcing so far", short: "Our push", value: 2.0,
+      lo: null, hi: null, kind: "push",
+      note: "The heat-trapping push of everything we have emitted, divided by the warming so far. While it out-reaches the net feedback, heat keeps piling up."
+    },
+    {
       key: "net", name: "Net feedback", short: "NET", value: -1.16,
       lo: -1.81, hi: -0.51, kind: "net",
       note: "Stabilization wins — but only by about a third of its own strength. That narrow margin is what sets climate sensitivity near 3 °C per CO₂ doubling."

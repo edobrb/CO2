@@ -603,7 +603,7 @@
     const ih = rows.length * rowH;
     const H = M.t + ih + M.b;
     const iw = W - M.l - M.r;
-    const x0 = -3.6, x1 = 1.6;
+    const x0 = -3.6, x1 = 2.6;
     const X = (v) => M.l + ((v - x0) / (x1 - x0)) * iw;
     const barH = Math.min(24, rowH - 22);
 
@@ -631,10 +631,11 @@
     rows.forEach((r, i) => {
       const cy = M.t + i * rowH + rowH / 2;
       const isNet = r.kind === "net";
-      const color = cssColor(r.value >= 0 ? FB_AMP : FB_STAB);
+      const isPush = r.kind === "push";
+      const color = cssColor(isPush ? "var(--serious)" : r.value >= 0 ? FB_AMP : FB_STAB);
 
-      // separator hairline above the NET summary row
-      if (isNet) {
+      // separator hairline above the bottom-line pair (push vs pushback)
+      if (isPush) {
         el("line", {
           x1: 8, x2: W - 8, y1: cy - rowH / 2, y2: cy - rowH / 2,
           stroke: "#383835", "stroke-width": 1
@@ -660,7 +661,15 @@
         d = `M ${zx} ${y} H ${vx + rr} Q ${vx} ${y} ${vx} ${y + rr}` +
             ` V ${y + barH - rr} Q ${vx} ${y + barH} ${vx + rr} ${y + barH} H ${zx} Z`;
       }
-      el("path", { d, fill: color, opacity: isNet ? 1 : 0.92 }, svg);
+      if (isPush) {
+        // the push is not a feedback: hatched reference bar, not a solid fill
+        el("path", {
+          d, fill: "rgba(236, 131, 90, 0.16)", stroke: color,
+          "stroke-width": 1.5, "stroke-dasharray": "5 4"
+        }, svg);
+      } else {
+        el("path", { d, fill: color, opacity: isNet ? 1 : 0.92 }, svg);
+      }
 
       // uncertainty whisker
       if (r.lo != null && r.hi != null) {
@@ -683,16 +692,18 @@
       const far = pos ? Math.max(vx, X(r.hi != null ? r.hi : r.value))
                       : Math.min(vx, X(r.lo != null ? r.lo : r.value));
       let lx = far + (pos ? 10 : -10), anchor = pos ? "start" : "end", fill = "#f4f3ec";
+      let flipped = false;
       const fits = pos ? (lx + tw <= W - 2) : (lx - tw >= M.l + 2);
-      if (!fits) {                                            // set it inside the fill instead
-        lx = vx + (pos ? -8 : 8);
-        anchor = pos ? "end" : "start";
-        fill = "#0b0b0b";                                     // ink on the saturated fill
+      if (!fits) {                                            // set it at the fill instead —
+        lx = vx + (pos ? -8 : 8);                             // outlined, since a short bar
+        anchor = pos ? "end" : "start";                       // may not contain all of it
+        flipped = true;
       }
       el("text", {
         x: lx, y: cy + 4, "text-anchor": anchor,
         fill, "font-size": fs, "font-weight": 600,
         style: "font-variant-numeric: tabular-nums"
+          + (flipped ? "; paint-order: stroke; stroke: rgba(11,11,11,0.8); stroke-width: 3px" : "")
       }, svg).textContent = txt;
 
       // full-row hit target (≥24px) carrying the explanation
@@ -728,12 +739,14 @@
     legend.textContent = "";
     [{ n: t("ledger.legendAmp"), c: cssColor(FB_AMP) },
      { n: t("ledger.legendStab"), c: cssColor(FB_STAB) },
+     { n: t("ledger.legendPush"), c: cssColor("var(--serious)"), dash: true },
      { n: t("ledger.legendWhisker"), c: "#f4f3ec" }].forEach((it) => {
       const item = document.createElement("span");
       item.className = "legend-item";
       const key = document.createElement("span");
       key.className = "legend-key";
       key.style.borderTopColor = it.c;
+      if (it.dash) key.style.borderTopStyle = "dashed";
       item.appendChild(key);
       item.appendChild(document.createTextNode(it.n));
       legend.appendChild(item);
@@ -745,7 +758,8 @@
         fbT(r, "name"),
         (r.value > 0 ? "+" : "") + fmt2.format(r.value),
         r.lo != null ? fmt2.format(r.lo) + " – " + fmt2.format(r.hi) : "—",
-        r.kind === "amp" ? t("ledger.amp") : r.kind === "stab" ? t("ledger.stab") : t("ledger.net")
+        r.kind === "amp" ? t("ledger.amp") : r.kind === "stab" ? t("ledger.stab")
+          : r.kind === "push" ? t("ledger.push") : t("ledger.net")
       ]));
   }
 
